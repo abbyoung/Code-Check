@@ -206,7 +206,7 @@ class PageParser():
         for tag in self.soup.findAll(re.compile('title')):
             title.append(tag)
         if len(title) == 1:
-            return "Title: Pass"
+            return "Pass"
         elif len(title) > 1:
             return "ERROR: Overuse of Title Attribute"
         else:
@@ -217,7 +217,7 @@ class PageParser():
         imgs = self.soup.findAll('img')
         for img in imgs:
             if img.has_attr('alt'):
-                return "Alt Tags: Pass"
+                return "Pass"
             else:
                 return "WARNING: Missing Alt Tag(s) on Images"
                 #TODO: check for where in code missing alt tags are
@@ -227,7 +227,7 @@ class PageParser():
         headings_check = {}
         headings = self.headings()
         #is there an h1?
-        print headings
+        
         if headings[0] == 'h1':
             headings_check['h1'] = 'True'
         else:
@@ -260,12 +260,12 @@ class PageParser():
     def redundant_link(self):
         hrefs = []
         
-        redundant_links = {'Redundant Links': []}
+        redundant_links = []
         for sibling in self.soup.findAll('a'):
             hrefs.append(sibling['href'])
         for i in range(len(hrefs) - 1):
             if hrefs[i] == hrefs[i+1]:
-               redundant_links['Redundant Links'] += [hrefs[i+1]]
+               redundant_links.append(hrefs[i+1])
 
         return redundant_links
 
@@ -290,6 +290,17 @@ class PageParser():
         self.links_list()
         self.landmarks()
         self.soup.get_text()
+
+    def checks(self):
+        checks = {}
+        checks['Title'] = self.check_title()
+        checks['Redundant Links'] = self.redundant_link()
+        checks['Alt Tags'] = self.img_alt()
+        checks['Headings'] = self.headings_check()
+        checks['Aria'] = ''
+        checks['Tables'] = ''
+
+        print checks
        
         
 class Report():
@@ -306,8 +317,8 @@ def main():
     # response = raw_input("> ")
     # script, url = sys.argv
     output = PageParser("http://modelviewculture.com")
-    print output.redundant_link()
-    
+   
+    print output.checks()
     output.parse()
     output.extract()
     report = Report(output)
