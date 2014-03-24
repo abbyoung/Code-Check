@@ -186,6 +186,7 @@ class PageParser():
     # Create list of all links on page    
     def links(self):
         links = []
+        
         for tag in self.soup.findAll(re.compile('^a')):
             links.append(tag)
         return links
@@ -248,16 +249,26 @@ class PageParser():
 
         for i in range(len(headings)-1):
             if abs(headings[i] - headings[i+1]) > 1:
-                headings_check['Headings Check'] = "False"
+                headings_check['Headings Step Check'] = "False"
             else:
-                headings_check['Headings Check'] = "True"
+                headings_check['Headings Step Check'] = "True"
+
         return headings_check
         
 
 
     def redundant_link(self):
-        #Are there two href tags in a row with same path?
-        pass
+        hrefs = []
+        
+        redundant_links = {'Redundant Links': []}
+        for sibling in self.soup.findAll('a'):
+            hrefs.append(sibling['href'])
+        for i in range(len(hrefs) - 1):
+            if hrefs[i] == hrefs[i+1]:
+               redundant_links['Redundant Links'] += [hrefs[i+1]]
+
+        return redundant_links
+
 
     def aria(self):
         #Is ARIA being used with javascript?
@@ -294,8 +305,8 @@ def main():
     # print "Enter URL to parse."
     # response = raw_input("> ")
     # script, url = sys.argv
-    output = PageParser("http://jezebel.com")
-    print output.headings_check()
+    output = PageParser("http://modelviewculture.com")
+    print output.redundant_link()
     
     output.parse()
     output.extract()
