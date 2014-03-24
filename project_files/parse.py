@@ -17,18 +17,21 @@ class PageParser():
         self.body = self.soup.get_text()
 
     # Generate number of headings and links on page
+    def headings(self):
+        headings = []
+        for tag in self.soup.findAll(re.compile('^h\d')):
+            headings.append(tag.name)
+        return headings
+
     def stats(self):
         stats = {}
 
         num_links = len(self.links())
         stats["Number of Links"] = num_links
 
-        headings = []
-        for tag in self.soup.findAll(re.compile('^h\d')):
-            headings.append(tag)
-        num_headings = len(headings)
-
+        num_headings = len(self.headings())
         stats["Number of Headings"] = num_headings
+        
         return stats
 
     # Generate page outline of all headings
@@ -219,34 +222,35 @@ class PageParser():
                 #TODO: check for where in code missing alt tags are
 
 
-    def headings(self):
+    def headings_check(self):
+        headings_check = {}
+        headings = self.headings()
         #is there an h1?
-        headings = {}
-        # for heading in self.soup.findAll(re.compile('^h\d')):
-        #     if heading.name == 'h1':
-        #         headings_check['h1'] = 'True'
-        #     else:
-        #         heading_check['h1'] = 'False'
-        for key, value in headings.iteritems():
-            for heading in self.soup.findAll(re.compile('^h\d')):
-            #add all h tags to list in order, then iterate through and count h1>h2>h3
-            
-                if heading.name == 'h1':
-                    headings[heading.name] += '1'
-                if heading.name == 'h2':
-                    headings[heading.name] += '2'
-                if heading.name == 'h3':
-                    headings[heading.name] += '3'
-                if heading.name == 'h4':
-                    headings[heading.name] += '4'
-                if heading.name == 'h5':
-                    headings[heading.name] += '5'
-                if heading.name == 'h6':
-                    headings[heading.name] += '6'
-        print headings
-            
+        if headings[0] == 'h1':
+            headings_check['h1'] = 'True'
+        #check for steps
+        for i in range(len(headings)):
+            if headings[i] == 'h1':
+                headings[i] = 1
+            elif headings[i] == 'h2':
+                headings[i] = 2
+            elif headings[i] == 'h3':
+                headings[i] = 3
+            elif headings[i] == 'h4':
+                headings[i] = 4
+            elif headings[i] == 'h5':
+                headings[i] = 5
+            elif headings[i] == 'h6':
+                headings[i] = 6
 
-        #do any tags jump more tha one step?
+        for i in range(len(headings)-1):
+            if abs(headings[i] - headings[i+1]) > 1:
+                headings_check['Headings Check'] = "False"
+            else:
+                headings_check['Headings Check'] = "True"
+        return headings_check
+        
+
 
     def redundant_link(self):
         #Are there two href tags in a row with same path?
@@ -288,7 +292,8 @@ def main():
     # response = raw_input("> ")
     # script, url = sys.argv
     output = PageParser("http://modelviewculture.com")
-    print output.headings()
+    print output.headings_check()
+    
     output.parse()
     output.extract()
     report = Report(output)
