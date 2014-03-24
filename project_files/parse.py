@@ -226,12 +226,17 @@ class PageParser():
     def headings_check(self):
         headings_check = {}
         headings = self.headings()
-        #is there an h1?
         
-        if headings[0] == 'h1':
-            headings_check['h1'] = 'True'
+        #are there any headings?
+        if len(headings) > 0:
+        #is there an h1?
+            if headings[0] == 'h1':
+                headings_check['h1'] = 'True'
+            else:
+                headings_check['h1'] = 'False'
         else:
             headings_check['h1'] = 'False'
+            headings_check['Headings Step Check'] = 'False'
         #check for steps
         for i in range(len(headings)):
             if headings[i] == 'h1':
@@ -274,9 +279,13 @@ class PageParser():
         #Is ARIA being used with javascript?
         pass
 
-    def visual_table(self):
-        #Are tables being used for non-tabular data?
-        pass
+    def layout_table(self):
+        for tag in self.soup.findAll('table'):
+            if self.soup.th:
+                return "Tabular Data Okay"
+            else:
+                return "Check for Layout Tables"
+        
 
     def parse(self):
         self.char_replacement()
@@ -297,8 +306,8 @@ class PageParser():
         checks['Redundant Links'] = self.redundant_link()
         checks['Alt Tags'] = self.img_alt()
         checks['Headings'] = self.headings_check()
-        checks['Aria'] = ''
-        checks['Tables'] = ''
+        checks['Aria'] = self.aria()
+        checks['Tables'] = self.layout_table()
 
         print checks
        
@@ -316,7 +325,7 @@ def main():
     # print "Enter URL to parse."
     # response = raw_input("> ")
     # script, url = sys.argv
-    output = PageParser("http://modelviewculture.com")
+    output = PageParser("http://news.ycombinator.com")
    
     print output.checks()
     output.parse()

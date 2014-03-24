@@ -170,7 +170,7 @@ def main_body(soup):
 
 # def main():
 
-r = requests.get("http://modelviewculture.com")
+r = requests.get("http://webaim.org/techniques/tables/#uses")
 data = r.text
 data.encode('utf-8')
 soup = BeautifulSoup(data)
