@@ -226,8 +226,11 @@ class PageParser():
         headings_check = {}
         headings = self.headings()
         #is there an h1?
+        print headings
         if headings[0] == 'h1':
             headings_check['h1'] = 'True'
+        else:
+            headings_check['h1'] = 'False'
         #check for steps
         for i in range(len(headings)):
             if headings[i] == 'h1':
@@ -291,7 +294,7 @@ def main():
     # print "Enter URL to parse."
     # response = raw_input("> ")
     # script, url = sys.argv
-    output = PageParser("http://modelviewculture.com")
+    output = PageParser("http://jezebel.com")
     print output.headings_check()
     
     output.parse()
