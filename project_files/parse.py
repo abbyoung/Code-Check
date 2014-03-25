@@ -300,7 +300,12 @@ class PageParser():
             else:
                 return "Check for Layout Tables"
 
-
+    def language(self):
+        
+        if self.soup.html['lang']:
+            return (self.soup.html['lang'])
+        else:
+            return "False"
         
     def checks(self):
         checks = {}
@@ -311,6 +316,7 @@ class PageParser():
         checks['Aria'] = self.aria()
         checks['Tables'] = self.layout_table()
         checks['Empty Links'] = self.empty_links()
+        checks['Language'] = self.language()
         print checks
 
     def parse(self):
@@ -344,7 +350,7 @@ def main():
     # print "Enter URL to parse."
     # response = raw_input("> ")
     # script, url = sys.argv
-    output = PageParser("http://news.ycombinator.com")
+    output = PageParser("http://modelviewculture.com")
    
     print output.checks()
     output.parse()
