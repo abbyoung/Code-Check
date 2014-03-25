@@ -206,20 +206,20 @@ class PageParser():
         for tag in self.soup.findAll(re.compile('title')):
             title.append(tag)
         if len(title) == 1:
-            return "Pass"
+            return "True"
         elif len(title) > 1:
-            return "ERROR: Overuse of Title Attribute"
+            return "False - Overuse of Title Attribute"
         else:
-            return "WARNING: No Page Title"
+            return "False - No Page Title"
 
     def img_alt(self):
         #check if alt tag present. if not, throw error
         imgs = self.soup.findAll('img')
         for img in imgs:
             if img.has_attr('alt'):
-                return "Pass"
+                return "True"
             else:
-                return "WARNING: Missing Alt Tag(s) on Images"
+                return "False"
                 #TODO: check for where in code missing alt tags are
 
 
@@ -274,6 +274,20 @@ class PageParser():
 
         return redundant_links
 
+    def empty_links(self):
+        links_inner = {}
+        empty_links = []
+
+        for link in self.soup.findAll('a'):
+            links_inner[link] = link.text
+
+        for key, value in links_inner.iteritems():
+            if links_inner[key] == '':
+                empty_links.append(key)
+
+        return empty_links
+
+
 
     def aria(self):
         #Is ARIA being used with javascript?
@@ -285,7 +299,19 @@ class PageParser():
                 return "Tabular Data Okay"
             else:
                 return "Check for Layout Tables"
+
+
         
+    def checks(self):
+        checks = {}
+        checks['Title'] = self.check_title()
+        checks['Redundant Links'] = self.redundant_link()
+        checks['Alt Tags'] = self.img_alt()
+        checks['Headings'] = self.headings_check()
+        checks['Aria'] = self.aria()
+        checks['Tables'] = self.layout_table()
+        checks['Empty Links'] = self.empty_links()
+        print checks
 
     def parse(self):
         self.char_replacement()
@@ -300,16 +326,9 @@ class PageParser():
         self.landmarks()
         self.soup.get_text()
 
-    def checks(self):
-        checks = {}
-        checks['Title'] = self.check_title()
-        checks['Redundant Links'] = self.redundant_link()
-        checks['Alt Tags'] = self.img_alt()
-        checks['Headings'] = self.headings_check()
-        checks['Aria'] = self.aria()
-        checks['Tables'] = self.layout_table()
+   
 
-        print checks
+        
        
         
 class Report():

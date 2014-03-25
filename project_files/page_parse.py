@@ -72,10 +72,10 @@ def main_body(soup):
     meta = soup.findAll('meta')
     extract_element(meta)
     #print LINK for <a>
-    for a in soup.findAll('a'):
-        a. attrs['class'] = "link"
-        a.insert(0, 'LINK ')
-    #print GRAPHIC and alt text for img
+    # for a in soup.findAll('a'):
+    #     a. attrs['class'] = "link"
+    #     a.insert(0, 'LINK ')
+    # #print GRAPHIC and alt text for img
 
     imgs = soup.findAll('img')
     for img in imgs:
@@ -170,7 +170,7 @@ def main_body(soup):
 
 # def main():
 
-r = requests.get("http://webaim.org/techniques/tables/#uses")
+r = requests.get("http://news.ycombinator.com")
 data = r.text
 data.encode('utf-8')
 soup = BeautifulSoup(data)
