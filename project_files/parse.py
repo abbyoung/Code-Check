@@ -287,12 +287,6 @@ class PageParser():
 
         return empty_links
 
-
-
-    def aria(self):
-        #Is ARIA being used with javascript?
-        pass
-
     def layout_table(self):
         for tag in self.soup.findAll('table'):
             if self.soup.th:
@@ -302,10 +296,51 @@ class PageParser():
 
     def language(self):
         
-        if self.soup.html['lang']:
+        if self.soup.html.has_attr('lang'):
             return (self.soup.html['lang'])
         else:
             return "False"
+
+    def input(self):
+        #check if <input>, <textarea> and <select> elemenets have labels
+        if self.soup.findAll('input'):
+            for sibling in self.soup.input.previous_siblings:
+                sib = (repr(sibling))
+                if re.match('^<label', sib):
+                    return "True"
+                else:
+                    return "False"
+
+    def text_area(self):    
+        if self.soup.findAll('textarea'):
+            for sibling in self.soup.input.previous_siblings:
+                sib = (repr(sibling))
+                if re.match('^<label', sib):
+                    return "True"
+                else:
+                    return "False"
+
+    def select(self):    
+        if self.soup.findAll('select'):
+            for sibling in self.soup.input.previous_siblings:
+                sib = (repr(sibling))
+                if re.match('^<label', sib):
+                    return "True"
+                else:
+                    return "False"
+
+    def noscript(self):
+        if self.soup.findAll('noscript'):
+            return 'True'
+        else:
+            return 'False'
+
+    def header(self):
+        if self.soup.findAll('header'):
+            return 'True'
+        else:
+            return 'False'
+
         
     def checks(self):
         checks = {}
@@ -313,10 +348,14 @@ class PageParser():
         checks['Redundant Links'] = self.redundant_link()
         checks['Alt Tags'] = self.img_alt()
         checks['Headings'] = self.headings_check()
-        checks['Aria'] = self.aria()
         checks['Tables'] = self.layout_table()
         checks['Empty Links'] = self.empty_links()
         checks['Language'] = self.language()
+        checks['No Script'] = self.noscript()
+        checks['Header'] = self.header()
+        checks['Form - Input Label'] = self.input()
+        checks['Form - Text Area Label'] = self.text_area()
+        checks['Form - Select Label'] = self.select() 
         print checks
 
     def parse(self):
@@ -350,7 +389,7 @@ def main():
     # print "Enter URL to parse."
     # response = raw_input("> ")
     # script, url = sys.argv
-    output = PageParser("http://modelviewculture.com")
+    output = PageParser("http://news.ycombinator.com")
    
     print output.checks()
     output.parse()
