@@ -276,14 +276,14 @@ class PageParser():
 
     def empty_links(self):
         links_inner = {}
-        empty_links = []
+        empty_links = {'URLS': [], 'Total': 0}
 
         for link in self.soup.findAll('a'):
             links_inner[link] = link.text
-
-        for key, value in links_inner.iteritems():
-            if links_inner[key] == '':
-                empty_links.append(key)
+            if link.text == '':
+                print link
+                empty_links['URLS'] += [link]
+                empty_links['Total'] += 1
 
         return empty_links
 
