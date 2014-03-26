@@ -15,6 +15,11 @@ class PageParser():
         self.data = self.r.text
         self.soup = BeautifulSoup(self.data)
         self.body = self.soup.get_text()
+        self.pagelinks = []
+        self.pagestats = []
+        self.pageoutline = []
+        self.pagebody = []
+
 
     # Generate number of headings and links on page
     def headings(self):
@@ -236,7 +241,7 @@ class PageParser():
                 headings_check['h1'] = 'False'
         else:
             headings_check['h1'] = 'False'
-            headings_check['Headings Step Check'] = 'False'
+            headings_check['Headings Step Check'] = 'Pass - No Headings'
         #check for steps
         for i in range(len(headings)):
             if headings[i] == 'h1':
@@ -261,7 +266,6 @@ class PageParser():
         return headings_check
         
 
-
     def redundant_link(self):
         hrefs = []
         
@@ -281,7 +285,6 @@ class PageParser():
         for link in self.soup.findAll('a'):
             links_inner[link] = link.text
             if link.text == '':
-                print link
                 empty_links['URLS'] += [link]
                 empty_links['Total'] += 1
 
@@ -356,32 +359,46 @@ class PageParser():
         checks['Form - Input Label'] = self.input()
         checks['Form - Text Area Label'] = self.text_area()
         checks['Form - Select Label'] = self.select() 
-        print checks
+        return checks
 
     def parse(self):
         self.char_replacement()
         self.replace_numbers()
         self.tables()
-        
+    
+    def get_links(self):
+        if self.pagelinks == []:
+            self.pagelinks = self.links_list()
+
+        return self.pagelinks
+
+    def get_stats(self):
+        if self.pagestats == []:
+            self.pagestats = self.stats()
+
+        return self.pagestats
+
+    def get_outline(self):
+        if self.pageoutline == []:
+            self.pageoutline = self.outline()
+
+        return self.pageoutline
+
+    def get_body(self):
+        if self.pagebody == []:
+            self.pagebody = self.soup.get_text()
+
+        return self.pagebody
+
 
     def extract(self):
-        self.stats()
-        self.outline()
-        self.links_list()
         self.landmarks()
-        self.soup.get_text()
-
-   
-
-        
        
         
 class Report():
-    def __init__(self, output):
-        self.output = output
+    def __init__(self, checks):
+        self.checks = checks
      
-
-
 
 
 
@@ -389,17 +406,17 @@ def main():
     # print "Enter URL to parse."
     # response = raw_input("> ")
     # script, url = sys.argv
-    output = PageParser("http://news.ycombinator.com")
-   
-    print output.checks()
+    output = PageParser("http://jezebel.com")
+    output.checks()
     output.parse()
+    print "*STATS*\n"
+    print output.get_stats()
+    print "*OUTLINE*\n"
+    print output.get_outline()
+    print "*LINKS*\n"
+    print output.get_links()
     output.extract()
-    report = Report(output)
-    
-    #print output.stats()
-    #print output.outline()
-    #output.links_list()
-    #print output.soup.get_text()
+    print output.get_body()
 
 
 
