@@ -74,6 +74,7 @@ class PageParser():
 
     
     def landmarks(self):
+        print self.soup
 
         #clean script tags
         scripts = self.soup.findAll('script')
@@ -362,6 +363,7 @@ class PageParser():
         return checks
 
     def parse(self):
+        self.landmarks()
         self.char_replacement()
         self.replace_numbers()
         self.tables()
@@ -391,8 +393,8 @@ class PageParser():
         return self.pagebody
 
 
-    def extract(self):
-        self.landmarks()
+    # def extract(self):
+    #     self.landmarks()
        
         
 class Report():
@@ -409,14 +411,14 @@ def main():
     output = PageParser("http://jezebel.com")
     output.checks()
     output.parse()
-    print "*STATS*\n"
-    print output.get_stats()
-    print "*OUTLINE*\n"
-    print output.get_outline()
-    print "*LINKS*\n"
-    print output.get_links()
+    #print "*STATS*\n"
+    #print output.get_stats()
+    #print "*OUTLINE*\n"
+    #print output.get_outline()
+    #print "*LINKS*\n"
+    #print output.get_links()
     output.extract()
-    print output.get_body()
+    #print output.get_body()
 
 
 

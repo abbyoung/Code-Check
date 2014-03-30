@@ -7,6 +7,32 @@
  *
  * Designed and built with all the love in the world @twitter by @mdo and @fat.
  */
+ 
+ /* Body/output highlighting */
+.highlight {
+  background-color: #A0CAF8;
+}
+.form-group {
+  width: 70%;
+  margin: 0 auto;
+}
+.url-form{
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#url {
+  margin: 0 auto;
+  display: block;
+  margin-top: 15px;
+
+
+}
+#url_btn {
+  display: block;
+  margin: 0 auto;
+  margin-top: 15px;
+}
 article,
 aside,
 details,
@@ -107,7 +133,7 @@ textarea {
 body {
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 18px;
   color: #333333;
   background-color: #ffffff;
@@ -286,7 +312,7 @@ a:hover {
 p {
   margin: 0 0 9px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 18px;
 }
 p small {
@@ -305,6 +331,7 @@ h3,
 h4,
 h5,
 h6 {
+  font-family: 'Montserrat', sans-serif;
   margin: 0;
   font-weight: bold;
   color: #333333;
@@ -320,18 +347,45 @@ h6 small {
   color: #999999;
 }
 h1 {
+
   font-size: 30px;
   line-height: 36px;
 }
 h1 small {
-  font-size: 18px;
+  font-size: 28px;
+  text-align: center;
+}
+h1#h1_logo{
+  font-size: 60px;
+  text-align: center;
+
+}
+#logo {
+  margin-top: 100px;
+  margin-bottom: 50px;
+  width: 940px;
+  height: auto;
+
+}
+#logo_img {
+  width: 250px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 40px;
+  
 }
 h2 {
   font-size: 24px;
   line-height: 36px;
+  margin-top: 40px;
 }
 h2 small {
   font-size: 18px;
+
+}
+#intro {
+  margin-top: 130px;
 }
 h3 {
   line-height: 27px;
@@ -401,7 +455,7 @@ dd {
   margin-left: 9px;
 }
 hr {
-  margin: 18px 0;
+  margin-bottom: 15px;
   border: 0;
   border-top: 1px solid #eeeeee;
   border-bottom: 1px solid #ffffff;
@@ -541,7 +595,7 @@ input,
 button,
 select,
 textarea {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: normal;
   line-height: 18px;
 }
@@ -555,17 +609,18 @@ label {
   display: block;
   margin-bottom: 5px;
   color: #333333;
+  text-align: center;
 }
 input,
 textarea,
 select,
 .uneditable-input {
   display: inline-block;
-  width: 210px;
-  height: 18px;
+  width: 250px;
+  height: 25px;
   padding: 4px;
   margin-bottom: 9px;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 18px;
   color: #555555;
   border: 1px solid #ccc;
