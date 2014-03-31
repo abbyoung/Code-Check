@@ -28,8 +28,41 @@
 
 <h2>Feedback</h2>
 <hr>
-<p>For more information, check out the docs.</p>
+<!-- <p>For more information, check out the docs.</p> -->
+{% for msg in page_report %}
+<br />
+<h3>{{msg}}</h3>
+    {% if msg == 'Redundant Links' %}
+        {{page_report[msg][0]}}
+        {% for link in page_report[msg][1] %}
+        {{link}} <br />
+        {% endfor %}
 
-{{checks}}
+    {% elif msg == 'Empty Links' %}
+        {{page_report[msg][0]}}
+        {% for link in page_report[msg][1] %}
+        {{link}} <br />
+        {% endfor %}
 
+    {% endif %}
+
+    {{page_report[msg]}}
+
+
+
+    
+<br />
+{% endfor %}
+
+
+
+
+
+
+<br />
 {% endblock %}
+
+
+
+
+

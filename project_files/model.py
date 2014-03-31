@@ -480,12 +480,15 @@ class PageParser():
 ## End class delcarations
 def add_message(report, key, value, error, code_snippet):
     
-    message_id = db_session.query(Message).filter_by(error=error).first()
-    message_id = message_id.id
+    message = db_session.query(Message).filter_by(error=error).first()
+    message_id = message.id
     m = Report_Message(message_id=message_id, code_snippet=code_snippet)
     report.messages.append(m)
     db_session.add(m)
     db_session.commit()
+    message = message.message
+    
+    return message
 
 # def create_report(url, body, store_outline, store_links):
 #     add_report = Report(url=url, text_output=body, outline=store_outline, links=store_links)
