@@ -19,53 +19,55 @@ from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 
 from flask.ext.login import UserMixin
 
+
 engine = create_engine(config.DB_URI, echo=False) 
-session = scoped_session(sessionmaker(bind=engine,
+db_session = scoped_session(sessionmaker(bind=engine,
                          autocommit = False,
                          autoflush = False))
 
 Base = declarative_base()
-Base.query = session.query_property()
+Base.query = db_session.query_property()
 
-class Messages(Base):
+class Message(Base):
     __tablename__ = "messages" 
-    id = Column(Integer, primary_key=True)
     
+    id = Column(Integer, primary_key=True)
     title = Column(String(64), nullable=False)
-    message = Column(String(64), nullable=False)
+    message = Column(Text, nullable=False)
+    error = Column(Text, nullable=False)
 
-    reports = relationship("Reports", uselist=True)
 
-    # def set_password(self, password):
-    #     self.salt = bcrypt.gensalt()
-    #     password = password.encode("utf-8")
-    #     self.password = bcrypt.hashpw(password, self.salt)
+class Report_Message(Base):
+    
+    __tablename__ = "report_message"
+    id = Column(Integer, primary_key=True)
+    report_id = Column(Integer, ForeignKey('reports.id'))
+    message_id = Column(Integer, ForeignKey('messages.id'))
+    code_snippet = Column(String(64))
+    report = relationship("Report", backref=backref("messages", order_by=report_id))
 
-    # def authenticate(self, password):
-    #     password = password.encode("utf-8")
-    #     return bcrypt.hashpw(password, self.salt.encode("utf-8")) == self.password
 
-class Reports(Base):
+class Report(Base):
     __tablename__ = "reports"
     
     id = Column(Integer, primary_key=True)
-    title = Column(String(64), nullable=False)
-    body = Column(Text, nullable=False)
+    url = Column(String(64))
+    text_output = Column(Text, nullable=False)
+    outline = Column(Text, nullable=False)
+    links = Column(Text, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.now)
-    posted_at = Column(DateTime, nullable=True, default=None)
-    message_id = Column(Integer, ForeignKey("messages.id"))
 
-    user = relationship("User")
+ 
 
 
 def create_tables():
     Base.metadata.create_all(engine)
-    u = User(email="test@test.com")
-    u.set_password("unicorn")
-    session.add(u)
-    p = Post(title="This is a test post", body="This is the body of a test post.")
-    u.posts.append(p)
-    session.commit()
+    # u = User(email="test@test.com")
+    # u.set_password("unicorn")
+    # db_session.add(u)
+    # p = Post(title="This is a test post", body="This is the body of a test post.")
+    # u.posts.append(p)
+    db_session.commit()
 
 class PageParser():
     def __init__(self, url):
@@ -80,6 +82,7 @@ class PageParser():
         self.pagestats = []
         self.pageoutline = []
         self.pagebody = []
+        self.num_replaced = False
 
 
     # Generate number of headings and links on page
@@ -252,6 +255,7 @@ class PageParser():
 
         body = self.soup.get_text()
         
+        self.num_replaced = True
         return body    
 
     # Create list of all links on page    
@@ -272,6 +276,11 @@ class PageParser():
                 links_list.append(link)
         return links_list
 
+    def title(self):
+        title = []
+        for tag in self.soup.findAll(re.compile('title')):
+            title.append(tag)
+        return title[0]
     # WARNINGS/ERRORS CHECKS -- MAY MOVE TO REPORT CLASS
     def check_title(self):
         title = []
@@ -280,9 +289,9 @@ class PageParser():
         if len(title) == 1:
             return "True"
         elif len(title) > 1:
-            return "False - Overuse of Title Attribute"
+            return "titleoveruse"
         else:
-            return "False - No Page Title"
+            return "titlenone"
 
     def img_alt(self):
         #check if alt tag present. if not, throw error
@@ -291,7 +300,7 @@ class PageParser():
             if img.has_attr('alt'):
                 return "True"
             else:
-                return "False"
+                return "alttags"
                 #TODO: check for where in code missing alt tags are
 
 
@@ -305,10 +314,10 @@ class PageParser():
             if headings[0] == 'h1':
                 headings_check['h1'] = 'True'
             else:
-                headings_check['h1'] = 'False'
+                headings_check['h1'] = 'missingh1'
         else:
-            headings_check['h1'] = 'False'
-            headings_check['Headings Step Check'] = 'Pass - No Headings'
+            headings_check['h1'] = 'missingh1'
+            headings_check['Headings Step Check'] = 'noheadings'
         #check for steps
         for i in range(len(headings)):
             if headings[i] == 'h1':
@@ -326,7 +335,7 @@ class PageParser():
 
         for i in range(len(headings)-1):
             if abs(headings[i] - headings[i+1]) > 1:
-                headings_check['Headings Step Check'] = "False"
+                headings_check['Headings Step Check'] = "headingsskip"
             else:
                 headings_check['Headings Step Check'] = "True"
 
@@ -360,26 +369,26 @@ class PageParser():
     def layout_table(self):
         for tag in self.soup.findAll('table'):
             if self.soup.th:
-                return "Tabular Data Okay"
+                return "True"
             else:
-                return "Check for Layout Tables"
+                return "layouttables"
 
     def language(self):
         
         if self.soup.html.has_attr('lang'):
-            return (self.soup.html['lang'])
+            return "True"
         else:
-            return "False"
+            return "language"
 
     def input(self):
-        #check if <input>, <textarea> and <select> elemenets have labels
+        #check if <input> has labels
         if self.soup.findAll('input'):
             for sibling in self.soup.input.previous_siblings:
                 sib = (repr(sibling))
                 if re.match('^<label', sib):
                     return "True"
                 else:
-                    return "False"
+                    return "inputlabel"
 
     def text_area(self):    
         if self.soup.findAll('textarea'):
@@ -388,7 +397,7 @@ class PageParser():
                 if re.match('^<label', sib):
                     return "True"
                 else:
-                    return "False"
+                    return "textarealabel"
 
     def select(self):    
         if self.soup.findAll('select'):
@@ -397,19 +406,17 @@ class PageParser():
                 if re.match('^<label', sib):
                     return "True"
                 else:
-                    return "False"
+                    return "selectlabel"
 
     def noscript(self):
         if self.soup.findAll('noscript'):
-            return 'True'
+            return 'noscript'
         else:
-            return 'False'
+            return None
 
     def header(self):
         if self.soup.findAll('header'):
-            return 'True'
-        else:
-            return 'False'
+            return 'header'
 
         
     def checks(self):
@@ -441,6 +448,9 @@ class PageParser():
         if not self.char_replaced:
             self.char_replacement()
 
+        if not self.num_replaced:
+            self.replace_numbers()
+
         if self.pagelinks == []:
             self.pagelinks = self.links_list()
 
@@ -467,10 +477,24 @@ class PageParser():
 
         return self.pagebody
 
+## End class delcarations
+def add_message(report, key, value, error, code_snippet):
+    
+    message_id = db_session.query(Message).filter_by(error=error).first()
+    message_id = message_id.id
+    m = Report_Message(message_id=message_id, code_snippet=code_snippet)
+    report.messages.append(m)
+    db_session.add(m)
+    db_session.commit()
 
-   
+# def create_report(url, body, store_outline, store_links):
+#     add_report = Report(url=url, text_output=body, outline=store_outline, links=store_links)
+#     session.add(add_report)
+#     session.commit()
+
 
 
 if __name__ == "__main__":
-    #create_tables()
+    # create_tables()
     pass
+    
