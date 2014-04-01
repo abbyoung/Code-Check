@@ -33,26 +33,42 @@
 <br />
 <h3>{{msg}}</h3>
     {% if msg == 'Redundant Links' %}
+        <h3><small>{{page_report[msg][1]|length}} Links Found</small></h3>
         {{page_report[msg][0]}}
+        <br /><br />
+        <h4>Links</h4>
         {% for link in page_report[msg][1] %}
         {{link}} <br />
         {% endfor %}
 
     {% elif msg == 'Empty Links' %}
+        <h3><small>{{page_report[msg][1]|length}} Links Found</small></h3>
         {{page_report[msg][0]}}
         {% for link in page_report[msg][1] %}
         {{link}} <br />
         {% endfor %}
 
-    {% endif %}
+    {% else %}
+        {{page_report[msg]}}
 
-    {{page_report[msg]}}
+    {% endif %}
 
 
 
     
 <br />
 {% endfor %}
+
+<!--Audio-->
+<audio controls="controls">
+    
+    <source src="" type="audio/wav">
+    </audio>
+
+<script type="text/javascript">
+    var msg = new SpeechSynthesisUtterance('I refuse to work!');
+    window.speechSynthesis.speak(msg);
+  </script>
 
 
 

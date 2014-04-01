@@ -9,6 +9,7 @@ import re
 from num2words import num2words
 import json
 
+
 app = Flask(__name__)
 app.config.from_object(config)
 
@@ -52,12 +53,25 @@ def results():
     headings = num2words(headings)
     links = stats['Number of Links']
     links = num2words(links)
+    audio = page.get_body()
+    audio = audio.replace('\n', '')
+    audio = audio.replace(' ', '%20')
+    audio = audio.replace('{{', '')
+    audio = audio.replace('}}', '')
+    audio = audio.replace('^', '')
+    audio = audio.replace('*', '')
+    
+
+
     body = Markup(page.get_body())
     body = body.replace('\n', '')
     body = body.replace('{{', Markup('<span class="highlight">'))
     body = body.replace('}}', Markup('</span>'))
     body = body.replace('^', Markup('<br><span class="highlight"><br />'))
     body = body.replace('*', Markup('</span><br>'))
+    
+  
+
     
     #encode outline and lists as json objects
     store_outline = json.dumps(outline)
@@ -137,7 +151,7 @@ def results():
 
     html = render_template("results.html", headings=headings,
                                 links=links, body=body, outline=outline,
-                                links_list=links_list, page_report=page_report)
+                                links_list=links_list, page_report=page_report, audio=audio)
     return html
 
 

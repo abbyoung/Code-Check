@@ -133,6 +133,9 @@ class PageParser():
         #clean html comments
         comments = self.soup.findAll(text=lambda text:isinstance(text, Comment))
         [comment.extract() for comment in comments]
+
+        doctype = self.soup.findAll(text=lambda text:isinstance(text, bs4.Doctype))
+        [doc.extract() for doc in doctype]
         
         #clean script tags
         scripts = self.soup.findAll('script')
@@ -201,6 +204,8 @@ class PageParser():
                         '|': " vertical bar ",
                         u'©': " copyright ",
                         u'»': " right double angle bracket ",
+                        u'›': " right angle bracket ",
+                        u'〈': "left angle bracket",
                         u'«': " left double angle bracket ",
                         '~': " tilde ",
                         '/': " slash ",
@@ -224,6 +229,7 @@ class PageParser():
                         '=': " equals ",
                         '"': " quote ",
                         '_': " underscore ",
+                        '∞': " infinity symbol ",
                     }
 
         # Replace characters with word
@@ -335,9 +341,7 @@ class PageParser():
 
         for i in range(len(headings)-1):
             if abs(headings[i] - headings[i+1]) > 1:
-                headings_check['Headings Step Check'] = "headingsskip"
-            else:
-                headings_check['Headings Step Check'] = "True"
+                return "headingsskip"
 
         return headings_check
         
@@ -347,10 +351,13 @@ class PageParser():
         
         redundant_links = []
         for sibling in self.soup.findAll('a'):
-            hrefs.append(sibling['href'])
-        for i in range(len(hrefs) - 1):
-            if hrefs[i] == hrefs[i+1]:
-               redundant_links.append(hrefs[i+1])
+            if sibling.has_attr('href'):
+                if sibling['href'] != '#':
+                    hrefs.append(sibling['href'])
+        for i in range(1, len(hrefs)):
+            if hrefs[i] == hrefs[i-1]:
+               redundant_links.append(hrefs[i])
+               redundant_links.append(hrefs[i-1])
 
         return redundant_links
 
@@ -476,6 +483,8 @@ class PageParser():
             self.pagebody = self.soup.get_text()
 
         return self.pagebody
+
+
 
 ## End class delcarations
 def add_message(report, key, value, error, code_snippet):
