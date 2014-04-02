@@ -16,8 +16,9 @@ from sqlalchemy import create_engine, ForeignKey
 from sqlalchemy import Column, Integer, String, DateTime, Text
 
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
-
+from flask import Markup
 from flask.ext.login import UserMixin
+import json
 
 
 engine = create_engine(config.DB_URI, echo=False) 
@@ -70,11 +71,19 @@ def create_tables():
     db_session.commit()
 
 class PageParser():
-    def __init__(self, url):
-        self.url = url
-        self.r = requests.get(self.url)
-        self.data = self.r.text
-        self.soup = BeautifulSoup(self.data)
+    def __init__(self, url=None, html=None):
+        if html:
+            self.soup = BeautifulSoup(html)
+        
+        elif url:
+            self.url = url
+            self.r = requests.get(self.url)
+            self.data = self.r.text
+            self.soup = BeautifulSoup(self.data)
+        
+        else:
+            print "ERROR! Invalid input."
+            return
         self.body = self.soup.get_text()
         self.is_parsed = False
         self.char_replaced = False
@@ -295,6 +304,7 @@ class PageParser():
         if len(title) == 1:
             return "True"
         elif len(title) > 1:
+            print title
             return "titleoveruse"
         else:
             return "titlenone"
@@ -498,6 +508,109 @@ def add_message(report, key, value, error, code_snippet):
     message = message.message
     
     return message
+
+
+def results(page, url):
+    results = {}
+    url = url
+    extract = page.extract()
+    links_list = page.get_links()
+    outline = page.get_outline()
+    stats = page.get_stats()
+    headings = stats['Number of Headings']
+    headings = num2words(headings)
+    links = stats['Number of Links']
+    links = num2words(links)
+
+    body = Markup(page.get_body())
+    body = body.replace('\n', '')
+    body = body.replace('{{', Markup('<span class="highlight">'))
+    body = body.replace('}}', Markup('</span>'))
+    body = body.replace('^', Markup('<br><span class="highlight"><br />'))
+    body = body.replace('*', Markup('</span><br>'))
+    
+    #encode outline and lists as json objects
+    store_outline = json.dumps(outline)
+    store_links = json.dumps(links_list)
+    #create report
+    # report = model.create_report(url, body, store_outline, store_links)
+    r = Report(url=url, text_output=body, links=store_links, outline=store_outline)
+    #run checks
+    checks = page.checks()
+    page_report = {}
+
+    #if error found, add to report_message database
+    if checks['Header'] == 'header':
+        message = add_message(report=r, key='Header', value='header', error='header', code_snippet=page.header())
+        page_report['Header'] = message
+    
+    if checks['Title'] == 'titleoveruse':
+        message = add_message(report=r, key='Title', value='titleoveruse', error='titleoveruse', code_snippet=None)
+        page_report['Title'] = message
+
+    if checks['Title'] == 'titlenone':
+        message = add_message(report=r, key='Title', value='titlenone', error='titlenone', code_snippet=None)
+        page_report['Title'] = message
+
+    if checks['Redundant Links']:
+        redundant_links = json.dumps(page.redundant_link())
+        message = add_message(report=r, key='Redundant Links', value=redundant_links, error='redundantlinks', code_snippet=redundant_links)
+        page_report['Redundant Links'] = [message, json.loads(redundant_links)]
+
+    if checks['Empty Links']['Total'] > 0:
+        empty_links = json.dumps(page.empty_links())
+        message = add_message(report=r, key='Empty Links', value=empty_links, error='emptylink', code_snippet=empty_links)
+        page_report['Empty Links'] = message
+
+    if checks['Alt Tags'] == 'alttags':
+        message = add_message(report=r, key='Alt Tags', value='alttags', error='alttags', code_snippet=None)
+        page_report['Alt Tags'] = message
+
+    if checks['Headings'] == 'missingh1':
+        message = add_message(report=r, key='Headings', value='missingh1', error='missingh1', code_snippet=None)
+        page_report['Headings'] = message
+
+    if checks['Headings'] == 'noheadings':
+        message = add_message(report=r, key='Headings', value='noheadings', error='noheadings', code_snippet=None)
+        page_report['Headings'] = message
+
+    if checks['Headings'] == 'headingsskip':
+        message = add_message(report=r, key='Headings', value='headingsskip', error='headingsskip', code_snippet=None)
+        page_report['Headings'] = message
+
+    if checks['Tables'] == 'layouttables':
+        message = add_message(report=r, key='Tables', value='layouttables', error='layouttables', code_snippet=None)
+        page_report['Tables'] = message
+
+    if checks['Language'] == 'language':
+        message = add_message(report=r, key='Language', value='language', error='language', code_snippet=None)
+        page_report['Language'] = message
+
+    if checks['No Script'] == 'noscript':
+        message = add_message(report=r, key='No Script', value='noscript', error='noscript', code_snippet=None)
+        page_report['No Script'] = message
+
+    if checks['Form - Input Label'] == 'inputlabel':
+        message = add_message(report=r, key='Form - Input Label', value='inputlabel', error='inputlabel', code_snippet=None)
+        page_report['Form - Input Label'] = message
+
+    if checks['Form - Text Area Label'] == 'textarealabel':
+        message = add_message(report=r, key='Form - Text Area Label', value='textarealabel', error='textarealabel', code_snippet=None)
+        page_report['Form - Text Area Label'] = message 
+
+    if checks['Form - Select Label'] == 'selectlabel':
+        message = add_message(report=r, key='Form - Select Label', value='selectlabel', error='selectlabel', code_snippet=None)
+        page_report['Form - Select Label'] = message
+
+    results['headings'] = headings
+    results['links'] = links
+    results['body'] = body
+    results['outline'] = outline
+    results['links_list'] = links_list
+    results['page_report'] = page_report
+
+    return results
+    
 
 # def create_report(url, body, store_outline, store_links):
 #     add_report = Report(url=url, text_output=body, outline=store_outline, links=store_links)
