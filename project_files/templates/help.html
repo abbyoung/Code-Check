@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h2>Help</h2>
+<hr>
+
+<h2>How does Code Check work?</h2>
+<p>Code Check parses HTML to pinpoint common errors that compromise a website's accessibility by screen readers. As you read a website's accessibility report, there are a few things to keep in mind.</p>
+
+<h3>Screen Reader Output</h3>
+<p>The first section displays the website text as a screen reader would read it to a user. Landmarks including link, bullet, graphic and headings are read in addition to all text and text-interpretations of special characters.</p>
+
+<p>Read through the text, and see if it is typo-free, logical, and easy to understand.</p>
+
+<h3>Page Outline</h3>
+<p>One way to nagivate a page with a screen reader is to move through the list of headings (h1 to h6 tags). Check the page outline to see if it's an accurate outline/layout of the page's contents.</p>
+
+<h3>Links</h3>
+<p>Links are another way users navigate the page, either in order of appearnce or from an alphabetical list of links. It's important that the text representing the link gives users a clear idea where it will lead. Read your links list&emdash;are they descriptive? If not, is there a clear description in the surrounding body text?</p>
+
+<h3>Feedback</h3>
+<p>Code Check performs a number of error checks on the page, and sends back a list of potential errors you should examine in your code.</p>
+
+<h4>Title - Overuse</h4>
+<p>Overuse of title tag. Make sure your page has one informative, descriptive title, using title.</p>
+
+<h4>Title - Missing</h4>
+<p>Page has no title tag. Make sure your page has one informative, descriptive title, using title.</p> 
+
+<h4>Redundant Links</h4>
+<p>Adjacent links on the page go to the same URL. This repetition can be frustrating for a screen reader user. If possible, combine links into one link, and remove redundant links.</p>
+
+<h4>Missing Alternative Text</h4>
+<p>Give each image a clear, descriptive, and succinct alt attribute. Without alternative text, image content will not be usable to screen reader users. If the image information is available in surrounding content or isn’t important to the user, give it an empty/null value (alt=“”).</p>
+
+<h4>Headings - Missing H1</h4>
+<p>No H1 tag. Page is missing h1, which provides screen readers with a starting point when reading a page. Give your page a semantic outline, starting with h1.</p>
+
+<h4>Headings - Missing</h4>
+<p>No headings present. Page is missing heading tags (h1, h2, h3...), which provide a navigable outline for screen reader users.</p>
+
+<h4>Headings - Steps</h4>
+<p>Heading tags skip more than one step (h1 to h3). Users will get confused and think they’ve missed content. Make sure headings only move one step (h1 to h2).</p>
+
+<h4>Layout Tables</h4>
+<p>Possible layout tables detected. Using tables for layout, instead of tabular data, can make content difficult for screen reader users to understand. If a layout table is unavoidable, make sure content reads correctly left to right, top to bottom.</p>
+
+<h4>Empty Links</h4>
+<p>Link(s) contain no text. Users will not understand the purpose of the link without text that describes its functionality. Remove the empty link or add descriptive text within the link.</p>
+
+<h4>Language</h4>
+<p> A language is not declared for the document. Declaring a language enables screen readers to read content in the appropriate language and automatically translate it.</p>
+
+<h4>Missing Input Label</h4>
+<p>An input tag does not have properly associated label text. If a form control is missing an associated text label, the purpose of the form control may not be known by users. Add a label element to associate it with its form control. If the label isn't visible, add an associated label, descriptive title attritubute to the form control, or reference the label using 'aria-labelledby'.</p>
+
+<h4>Missing Select Label</h4>
+<p>A select tag does not have properly associated label text. If a form control is missing an associated text label, the purpose of the form control may not be known by users. Add a label element to associate it with its form control. If the label isn't visible, add an associated label, descriptive title attritubute to the form control, or reference the label using 'aria-labelledby'.</p>
+
+<h4>Missing Text Area Label</h4>
+<p>A textarea tag does not have properly associated label text. If a form control is missing an associated text label, the purpose of the form control may not be known by users. Add a label element to associate it with its form control. If the label isn't visible, add an associated label, descriptive title attritubute to the form control, or reference the label using 'aria-labelledby'.</p>
+
+<h4>'noscript' Element Present</h4>
+<p>A noscript element is present. Content inside noscript is presented if JavaScript is disabled, but almost all screen reader users have JavaScript enabled. Be cautious in placing crucial or accessible content in noscript>, because it's often overlooked. Instead, ensure scripted content is accessible.</p>
+
+<h4>Header Element Present</h4>
+<p>A header element identifies page introduction or navigation. It’s usually surrounding the site or page name, logo, navigation, or other header content. Make sure header surrounds page header content only, and add ARIA role=“banner” to ensure better accessibility support.</p>
+
+
+
+
+{% endblock %}
