@@ -51,3 +51,10 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+
+**/.DS_Store
+
+
+.*.swp
+*.db
+
