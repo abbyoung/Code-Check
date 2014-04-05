@@ -1,9 +1,8 @@
-from wtforms import Form, TextField, TextAreaField, PasswordField, validators
+from flask.ext.wtf import Form
+from flask_wtf.html5 import URLField
+from wtforms import TextField
+from wtforms.validators import Required, url
 
-class LoginForm(Form):
-    email = TextField("Email", [validators.Required(), validators.Email()])
-    password = PasswordField("Password", [validators.Required()])
-
-class NewPostForm(Form):
-    title = TextField("title", [validators.Required()])
-    body = TextAreaField("body", [validators.Required()])
+# class LinkForm(Form):
+#     def __init__(self, require_tld=False, message="Error!"):
+#         self.page_url = URLField(validators=[url()])

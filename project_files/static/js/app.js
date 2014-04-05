@@ -1,19 +1,10 @@
-$(document).ready(function(){
-
-});
-
-var submitBookmarklet = $(document.getElementsByTagName('html'));
-
-submitBookmarklet.on("click", function(event){
-    $.ajax({
-        url: "http://localhost:5000/results/",
-        method: "POST",
-        data: $(submitBookmarklet).serialize(),
-
-    }).done(function(data){
-        alert(data);
-    }).fail(function(){
-        alert('fail!!!');
-    });
-
-});
+var h = document.documentElement.innerHTML;
+var x = new XMLHttpRequest();
+x.open('POST', 'http://sherry.local:5000/api', true);
+x.addEventListener('load', function (e) {
+    window.location = 'http://sherry.local:5000/report/'+ x.responseText;
+}, false);
+var d = new FormData();
+d.append("html", h);
+d.append("url", window.location.href);
+x.send(d);

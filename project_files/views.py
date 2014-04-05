@@ -1,14 +1,20 @@
-from flask import Flask, render_template, redirect, request, g, session, url_for, flash, Markup
+from flask import Flask, render_template, redirect, request, g, session, url_for, flash, Markup, make_response
 from model import Report, Message, Report_Message, PageParser
 from flask.ext.login import LoginManager, login_required, login_user, current_user
 from flaskext.markdown import Markdown
 import config
 import forms
 import model
+import forms
 import re
 from num2words import num2words
 import json
 import os
+from crossdomain import crossdomain
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Text
+from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 
 
 app = Flask(__name__)
@@ -35,123 +41,82 @@ def index():
 
 @app.route("/", methods=["POST"])
 def get_url():
+    # form = forms.LinkForm(request.form)
+    # url = form.page_url.data
     url = request.form.get("url")
     if not re.match('^(http|https)://', url):
         url = 'http://' + url
+    # if not form.validate():
+    #     flash("Error")
+    #     return render_template("index.html")
+    # url = form.url.data
+    #     # return render_template("index.html")
+    # # url = request.form.get("url")
+    # if not re.match('^(http|https)://', url):
+    #     url = 'http://' + url
      
     return redirect(url_for("results", url=url))
 
 @app.route("/api", methods=["POST"])
+@crossdomain(origin="*")
 def get_bookmarklet():
-    html = request.post['html']
-    return redirect(url_for("results", id=report_id))
-    #return reponse, something for CORS
+   
+    html = request.form.get('html')
+    url = request.form.get('url')
+    
+    page = model.PageParser(html=html, url=url)
+    results = model.results(page, url)
+
+    resp = make_response(json.dumps(results['report_id']))
+    
+    return resp
+
+@app.route("/report/<data>", methods=["GET"])
+def bookmarklet_results(data):
+    report_id = data
+    report = model.db_session.query(model.Report).filter_by(id=report_id).first()
+
+    stats = json.loads(report.stats)
+    headings = num2words(stats['Number of Headings'])
+    links = num2words(stats['Number of Links'])
+
+    body = Markup(report.text_output)
+    outline = json.loads(report.outline)
+    links_list = json.loads(report.links)
+    page_report = model.db_session.query(model.Report_Message).filter_by(report_id=report_id).all()
+    
+    messages = {}
+
+    for i in range(len(page_report)):
+        print page_report[i]
+        msg_title = page_report[i].message.title
+        msg = page_report[i].message.message
+        
+        #page_report[0].message.message
+        # messages[page_report[i].message.title] = [page_report[i].message.message]
+        if page_report[i].code_snippet:
+            code_snippet = json.loads(page_report[i].code_snippet)
+            messages[msg_title] = [msg, code_snippet]
+        else:
+            messages[msg_title] = msg
+    
+    html = render_template("bk_results.html", headings=headings, links=links, body=body, 
+                    outline=outline, links_list=links_list, messages=messages)
+    return html
+
 
 @app.route("/results", methods=["GET"])
 def results():
   
     url = request.args.get("url")
-    page = model.PageParser(url=url)
+    try:
+        page = model.PageParser(url=url)
+    except Exception, e:
+        print 'nope!'
+        flash('Couldn\'t get page. Please try again!')
+        return redirect(url_for("index"))
+    
     results = model.results(page, url)
-    print results
-    # extract = page.extract()
-    # links_list = page.get_links()
-    # outline = page.get_outline()
-    # stats = page.get_stats()
-    # headings = stats['Number of Headings']
-    # headings = num2words(headings)
-    # links = stats['Number of Links']
-    # links = num2words(links)
-
-
-
-    # body = Markup(page.get_body())
-    # body = body.replace('\n', '')
-    # body = body.replace('{{', Markup('<span class="highlight">'))
-    # body = body.replace('}}', Markup('</span>'))
-    # body = body.replace('^', Markup('<br><span class="highlight"><br />'))
-    # body = body.replace('*', Markup('</span><br>'))
-    
-  
-
-    
-    # #encode outline and lists as json objects
-    # store_outline = json.dumps(outline)
-    # store_links = json.dumps(links_list)
-    # #create report
-    # # report = model.create_report(url, body, store_outline, store_links)
-    # r = Report(url=url, text_output=body, links=store_links, outline=store_outline)
-    # #run checks
-    # checks = page.checks()
-    # page_report = {}
-
-    # #if error found, add to report_message database
-    # if checks['Header'] == 'header':
-    #     message = model.add_message(report=r, key='Header', value='header', error='header', code_snippet=page.header())
-    #     page_report['Header'] = message
-    
-    # if checks['Title'] == 'titleoveruse':
-    #     message = model.add_message(report=r, key='Title', value='titleoveruse', error='titleoveruse', code_snippet=None)
-    #     page_report['Title'] = message
-
-    # if checks['Title'] == 'titlenone':
-    #     message = model.add_message(report=r, key='Title', value='titlenone', error='titlenone', code_snippet=None)
-    #     page_report['Title'] = message
-
-    # if checks['Redundant Links']:
-    #     redundant_links = json.dumps(page.redundant_link())
-    #     message = model.add_message(report=r, key='Redundant Links', value=redundant_links, error='redundantlinks', code_snippet=redundant_links)
-    #     page_report['Redundant Links'] = [message, json.loads(redundant_links)]
-
-    # if checks['Empty Links']['Total'] > 0:
-    #     empty_links = json.dumps(page.empty_links())
-    #     message = model.add_message(report=r, key='Empty Links', value=empty_links, error='emptylink', code_snippet=empty_links)
-    #     page_report['Empty Links'] = message
-
-    # if checks['Alt Tags'] == 'alttags':
-    #     message = model.add_message(report=r, key='Alt Tags', value='alttags', error='alttags', code_snippet=None)
-    #     page_report['Alt Tags'] = message
-
-    # if checks['Headings'] == 'missingh1':
-    #     message = model.add_message(report=r, key='Headings', value='missingh1', error='missingh1', code_snippet=None)
-    #     page_report['Headings'] = message
-
-    # if checks['Headings'] == 'noheadings':
-    #     message = model.add_message(report=r, key='Headings', value='noheadings', error='noheadings', code_snippet=None)
-    #     page_report['Headings'] = message
-
-    # if checks['Headings'] == 'headingsskip':
-    #     message = model.add_message(report=r, key='Headings', value='headingsskip', error='headingsskip', code_snippet=None)
-    #     page_report['Headings'] = message
-
-    # if checks['Tables'] == 'layouttables':
-    #     message = model.add_message(report=r, key='Tables', value='layouttables', error='layouttables', code_snippet=None)
-    #     page_report['Tables'] = message
-
-    # if checks['Language'] == 'language':
-    #     message = model.add_message(report=r, key='Language', value='language', error='language', code_snippet=None)
-    #     page_report['Language'] = message
-
-    # if checks['No Script'] == 'noscript':
-    #     message = model.add_message(report=r, key='No Script', value='noscript', error='noscript', code_snippet=None)
-    #     page_report['No Script'] = message
-
-    # if checks['Form - Input Label'] == 'inputlabel':
-    #     message = model.add_message(report=r, key='Form - Input Label', value='inputlabel', error='inputlabel', code_snippet=None)
-    #     page_report['Form - Input Label'] = message
-
-    # if checks['Form - Text Area Label'] == 'textarealabel':
-    #     message = model.add_message(report=r, key='Form - Text Area Label', value='textarealabel', error='textarealabel', code_snippet=None)
-    #     page_report['Form - Text Area Label'] = message 
-
-    # if checks['Form - Select Label'] == 'selectlabel':
-    #     message = model.add_message(report=r, key='Form - Select Label', value='selectlabel', error='selectlabel', code_snippet=None)
-    #     page_report['Form - Select Label'] = message
-
-    
-
-
-
 
     html = render_template("results.html", headings=results['headings'],
                                 links=results['links'], body=results['body'], outline=results['outline'],
@@ -159,6 +124,13 @@ def results():
     return html
 
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+@app.route("/help")
+def help():
+    return render_template("help.html")
 
 
 # @app.route("/post/new", methods=["POST"])
@@ -202,4 +174,4 @@ def results():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")

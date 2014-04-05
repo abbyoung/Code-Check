@@ -20,7 +20,6 @@ from flask import Markup
 from flask.ext.login import UserMixin
 import json
 
-
 engine = create_engine(config.DB_URI, echo=False) 
 db_session = scoped_session(sessionmaker(bind=engine,
                          autocommit = False,
@@ -28,6 +27,9 @@ db_session = scoped_session(sessionmaker(bind=engine,
 
 Base = declarative_base()
 Base.query = db_session.query_property()
+
+
+
 
 class Message(Base):
     __tablename__ = "messages" 
@@ -46,6 +48,8 @@ class Report_Message(Base):
     message_id = Column(Integer, ForeignKey('messages.id'))
     code_snippet = Column(String(64))
     report = relationship("Report", backref=backref("messages", order_by=report_id))
+    message = relationship("Message")
+
 
 
 class Report(Base):
@@ -57,33 +61,31 @@ class Report(Base):
     outline = Column(Text, nullable=False)
     links = Column(Text, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.now)
-
- 
+    stats = Column(Text, nullable=False)
 
 
 def create_tables():
     Base.metadata.create_all(engine)
-    # u = User(email="test@test.com")
-    # u.set_password("unicorn")
-    # db_session.add(u)
-    # p = Post(title="This is a test post", body="This is the body of a test post.")
-    # u.posts.append(p)
     db_session.commit()
+
 
 class PageParser():
     def __init__(self, url=None, html=None):
         if html:
+            print html
             self.soup = BeautifulSoup(html)
         
         elif url:
             self.url = url
             self.r = requests.get(self.url)
+
             self.data = self.r.text
+            print self.data
             self.soup = BeautifulSoup(self.data)
         
         else:
             print "ERROR! Invalid input."
-            return
+            raise
         self.body = self.soup.get_text()
         self.is_parsed = False
         self.char_replaced = False
@@ -279,6 +281,7 @@ class PageParser():
         
         for tag in self.soup.findAll(re.compile('^a')):
             links.append(tag)
+
         return links
 
     # Generate printed list of all links
@@ -532,10 +535,13 @@ def results(page, url):
     #encode outline and lists as json objects
     store_outline = json.dumps(outline)
     store_links = json.dumps(links_list)
+    store_stats = json.dumps(stats)
     #create report
     # report = model.create_report(url, body, store_outline, store_links)
-    r = Report(url=url, text_output=body, links=store_links, outline=store_outline)
+    r = Report(url=url, text_output=body, links=store_links, outline=store_outline, stats=store_stats)
     #run checks
+
+    
     checks = page.checks()
     page_report = {}
 
@@ -602,20 +608,19 @@ def results(page, url):
         message = add_message(report=r, key='Form - Select Label', value='selectlabel', error='selectlabel', code_snippet=None)
         page_report['Form - Select Label'] = message
 
+    report_id = r.id
+    print report_id
     results['headings'] = headings
     results['links'] = links
     results['body'] = body
     results['outline'] = outline
     results['links_list'] = links_list
     results['page_report'] = page_report
+    results['report_id'] = report_id
+    
 
     return results
     
-
-# def create_report(url, body, store_outline, store_links):
-#     add_report = Report(url=url, text_output=body, outline=store_outline, links=store_links)
-#     session.add(add_report)
-#     session.commit()
 
 
 
