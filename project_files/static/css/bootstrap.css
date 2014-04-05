@@ -405,11 +405,15 @@ h1#h1_logo{
 }
 #logo_img {
   width: 250px;
-  display: block;
   margin-left: auto;
+  display: block;
   margin-right: auto;
   margin-bottom: 40px;
   
+}
+
+#small_logo {
+  width: 100px;
 }
 h2 {
   font-size: 24px;
