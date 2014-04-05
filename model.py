@@ -526,7 +526,7 @@ def results(page, url):
     links = num2words(links)
 
     body = Markup(page.get_body())
-    body = body.replace('\n', '')
+    body = body.replace('\n', (' '))
     body = body.replace('{{', Markup('<span class="highlight">'))
     body = body.replace('}}', Markup('</span>'))
     body = body.replace('^', Markup('<br><span class="highlight"><br />'))
