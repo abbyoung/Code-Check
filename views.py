@@ -117,10 +117,14 @@ def results():
         return redirect(url_for("index"))
     
     results = model.results(page, url)
+    url = re.sub('^(http|https)://', '', url)
+    print len(url)
+    if len(url) > 40:
+        pass
 
     html = render_template("results.html", headings=results['headings'],
                                 links=results['links'], body=results['body'], outline=results['outline'],
-                                links_list=results['links_list'], page_report=results['page_report'])
+                                links_list=results['links_list'], page_report=results['page_report'], url=url)
     return html
 
 

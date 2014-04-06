@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h2>Using Code Check</h2>
+<h1>Help</h1>
 <hr>
 
+<h2>Using Code Check</h2>
+<p>Code Check parses HTML to pinpoint common errors that compromise a website's accessibility by screen readers. 
 
-<p>Code Check parses HTML to pinpoint common errors that compromise a website's accessibility by screen readers. As you read a website's accessibility report, there are a few things to keep in mind.</p>
+<p>For public-facing pages, you can either enter the url on the <a href={{url_for('index')}}>home page</a>, or use the bookmarklet. If you're checking a page requiring log-in, use the bookmarklet to easily grab the html.</p> 
+
+<p>As you read a website's accessibility report, there are a few things to keep in mind.</p>
 
 <h2>Screen Reader Output</h2>
 <p>The first section displays the website text as a screen reader would read it to a user. Landmarks including link, bullet, graphic and headings are read in addition to all text and text-interpretations of special characters.</p>
@@ -19,51 +23,51 @@
 <p>Links are another way users navigate the page, either in order of appearnce or from an alphabetical list of links. It's important that the text representing the link gives users a clear idea where it will lead. Read your links list&emdash;are they descriptive? If not, is there a clear description in the surrounding body text?</p>
 
 <h2>Feedback</h2>
-<p>Code Check performs a number of error checks on the page, and sends back a list of potential errors you should examine in your code.</p>
+<p>Code Check performs a number of error checks on html, and sends back a list of potential errors you should examine in your code.</p>
 
-<h3>Title - Overuse</h3>
-<p>Overuse of title tag. Make sure your page has one informative, descriptive title, using title.</p>
+<ul><li><h3>Title - Overuse</h3></li>
+<p>Overuse of title tag. Make sure your page has one informative, descriptive title, using title.</p></li>
 
-<h3>Title - Missing</h3>
+<li><h3>Title - Missing</h3></li>
 <p>Page has no title tag. Make sure your page has one informative, descriptive title, using title.</p> 
 
-<h3>Redundant Links</h3>
+<li><h3>Redundant Links</h3></li>
 <p>Adjacent links on the page go to the same URL. This repetition can be frustrating for a screen reader user. If possible, combine links into one link, and remove redundant links.</p>
 
-<h3>Missing Alternative Text</h3>
+<li><h3>Missing Alternative Text</h3></li>
 <p>Give each image a clear, descriptive, and succinct alt attribute. Without alternative text, image content will not be usable to screen reader users. If the image information is available in surrounding content or isn’t important to the user, give it an empty/null value (alt=“”).</p>
 
-<h3>Headings - Missing &lt;h1&gt;</h3>
+<li><h3>Headings - Missing &lt;h1&gt;</h3></li>
 <p>No &lt;h1&gt; tag. Page is missing h1, which provides screen readers with a starting point when reading a page. Give your page a semantic outline, starting with h1.</p>
 
-<h3>Headings - Missing</h3>
+<li><h3>Headings - Missing</h3></li>
 <p>No headings present. Page is missing heading tags (h1, h2, h3...), which provide a navigable outline for screen reader users.</p>
 
-<h3>Headings - Steps</h3>
+<li><h3>Headings - Steps</h3></li>
 <p>Heading tags skip more than one step (h1 to h3). Users will get confused and think they’ve missed content. Make sure headings only move one step (h1 to h2).</p>
 
-<h3>Layout Tables</h3>
+<li><h3>Layout Tables</h3></li>
 <p>Possible layout tables detected. Using tables for layout, instead of tabular data, can make content difficult for screen reader users to understand. If a layout table is unavoidable, make sure content reads correctly left to right, top to bottom.</p>
 
-<h3>Empty Links</h3>
+<li><h3>Empty Links</h3></li>
 <p>Link(s) contain no text. Users will not understand the purpose of the link without text that describes its functionality. Remove the empty link or add descriptive text within the link.</p>
 
-<h3>Language</h3>
+<li><h3>Language</h3></li>
 <p> A language is not declared for the document. Declaring a language enables screen readers to read content in the appropriate language and automatically translate it.</p>
 
-<h3>Missing Input Label</h3>
+<li><h3>Missing Input Label</h3></li>
 <p>An &lt;input&gt; tag does not have properly associated label text. If a form control is missing an associated text label, the purpose of the form control may not be known by users. Add a label element to associate it with its form control. If the label isn't visible, add an associated label, descriptive title attritubute to the form control, or reference the label using 'aria-labelledby'.</p>
 
-<h3>Missing Select Label</h3>
+<li><h3>Missing Select Label</h3></li>
 <p>A &lt;select&gt; tag does not have properly associated label text. If a form control is missing an associated text label, the purpose of the form control may not be known by users. Add a label element to associate it with its form control. If the label isn't visible, add an associated label, descriptive title attritubute to the form control, or reference the label using 'aria-labelledby'.</p>
 
-<h3>Missing Text Area Label</h3>
+<li><h3>Missing Text Area Label</h3></li>
 <p>A &lt;textarea&gt; tag does not have properly associated label text. If a form control is missing an associated text label, the purpose of the form control may not be known by users. Add a label element to associate it with its form control. If the label isn't visible, add an associated label, descriptive title attritubute to the form control, or reference the label using 'aria-labelledby'.</p>
 
-<h3>&lt;noscript&gt; Element Present</h3>
+<li><h3>&lt;noscript&gt; Element Present</h3></li>
 <p>A &lt;noscript&gt; element is present. Content inside noscript is presented if JavaScript is disabled, but almost all screen reader users have JavaScript enabled. Be cautious in placing crucial or accessible content in &lt;noscript&gt;, because it's often overlooked. Instead, ensure scripted content is accessible.</p>
 
-<h3>&lt;header&gt; Element Present</h3>
+<li><h3>&lt;header&gt; Element Present</h3></li>
 <p>A header element identifies page introduction or navigation. It’s usually surrounding the site or page name, logo, navigation, or other header content. Make sure header surrounds page header content only, and add ARIA role=“banner” to ensure better accessibility support.</p>
 
 

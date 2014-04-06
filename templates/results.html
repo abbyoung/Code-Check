@@ -1,77 +1,84 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h2>Screen Reader Results</h2>
-<p>Below is an approximation of how screen readers will interpret the page.</p>
-<hr>
+<!-- Tab panes -->
+
+<h1>Results for {{url}}</h1>
+
+<ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        <li class="active"><a data-toggle="tab" href="#screenreader">Screen Reader Output</a></li>
+        <li><a data-toggle="tab" href="#outline">Page Outline</a></li>
+        <li><a data-toggle="tab" href="#links">Links</a></li>
+        <li><a data-toggle="tab" href="#feedback">Feedback</a></li>
+    </ul>
+
+
+<div class="tab-content">
+<div class="tab-pane active" id="screenreader">
+    <h2>Screen Reader Output</h2>
+
+<!--     <p>Below is an approximation of how screen readers will interpret the page.</p> -->
+    <hr>
 
 
 
-<p>Page has {{headings}} headings and {{links}} links.</p>
+    <p>Page has {{headings}} headings and {{links}} links.</p>
 
-{{body}}
-
-
-</p>
-
-<h2>Page Outline</h2>
-<hr>
-{% for key, value in outline.iteritems() %}
-{{key}}, {{value}}<br />
-{% endfor %}
-
-<h2>Links</h2>
-<hr>
-{% for item in links_list %}
-{{item}}<br />
-{% endfor %}
-
-<h2>Feedback</h2>
-<hr>
-<!-- <p>For more information, check out the docs.</p> -->
-{% for msg in page_report %}
-<br />
-<h3>{{msg}}</h3>
-    {% if msg == 'Redundant Links' %}
-        <h3><small>{{page_report[msg][1]|length}} Links Found</small></h3>
-        {{page_report[msg][0]}}
-        <br /><br />
-        <h4>Links</h4>
-        {% for link in page_report[msg][1] %}
-        {{link}} <br />
-        {% endfor %}
-
-    {% elif msg == 'Empty Links' %}
-        <h3><small>{{page_report[msg][1]|length}} Links Found</small></h3>
-        {{page_report[msg][0]}}
-        {% for link in page_report[msg][1] %}
-        {{link}} <br />
-        {% endfor %}
-
-    {% else %}
-        {{page_report[msg]}}
-
-    {% endif %}
+    {{body}}
 
 
+    </p>
+</div>
+<div class="tab-pane" id="outline">
+    <h2>Page Outline</h2>
+    <hr>
+    {% for key, value in outline.iteritems() %}
+    {{key}}, {{value}}<br />
+    {% endfor %}
+</div>
+<div class="tab-pane" id="links">
+    <h2>Links</h2>
+    <hr>
+    {% for item in links_list %}
+    {{item}}<br />
+    {% endfor %}
+</div>
+<div class="tab-pane" id="feedback">
+    <h2>Feedback</h2>
+    <hr>
+    <!-- <p>For more information, check out the docs.</p> -->
+    {% for msg in page_report %}
+    <br />
+    <h3>{{msg}}</h3>
+        {% if msg == 'Redundant Links' %}
+            <h3><small>{{page_report[msg][1]|length}} Links Found</small></h3>
+            {{page_report[msg][0]}}
+            <br /><br />
+            <h4>Links</h4>
+            {% for link in page_report[msg][1] %}
+            {{link}} <br />
+            {% endfor %}
 
-    
-<br />
-{% endfor %}
+        {% elif msg == 'Empty Links' %}
+            <h3><small>{{page_report[msg][1]|length}} Links Found</small></h3>
+            {{page_report[msg][0]}}
+            {% for link in page_report[msg][1] %}
+            {{link}} <br />
+            {% endfor %}
 
+        {% else %}
+            {{page_report[msg]}}
 
-<!--Audio-->
+        {% endif %}
 
 
 
+        
+    <br />
+    {% endfor %}
+</div>
 
+</div>
 
-
-
-
-
-<br />
 {% endblock %}
-
-
 

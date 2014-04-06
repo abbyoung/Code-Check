@@ -4,6 +4,8 @@
         <link rel="stylesheet" href="/static/css/bootstrap.css">
         <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.js"></script>
 
         
     </head>
@@ -15,24 +17,17 @@
                         <li><a href="{{url_for("index")}}">Code Check</a></li>
                         <li><a href="{{url_for("help")}}">Help</a></li>
                         <li><a href="{{url_for("about")}}">About</a></li>
+
                     </ul>
                 </div>
             </div>
         </div>
         <div class="container">
-            <img id="small_logo" src="/static/img/icon.png" alt="Code Check logo, with a checkmark and x.">
-            <ul>
-            {% for message in get_flashed_messages() %}
-            <li>{{message}}</li>
-            {% endfor %}
-            </ul>
-            <p>
+            <a href="{{url_for("index")}}"><img id="small_logo" src="/static/img/icon.png" alt="Code Check logo, with a checkmark and x."></a>
+           
             {% block body %}
-            {% endblock %}
-            </p>
+            
         </div>
-    <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>
-    <script type="text/javascript" src="/static/js/bootstrap.js"></script>
-    
+    {% endblock %}
     </body>
 </html>

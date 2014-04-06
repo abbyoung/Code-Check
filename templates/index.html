@@ -15,11 +15,14 @@
                         <li><a href="{{url_for("index")}}">Code Check</a></li>
                         <li><a href="{{url_for("help")}}">Help</a></li>
                         <li><a href="{{url_for("about")}}">About</a></li>
+                        
                     </ul>
                 </div>
             </div>
         </div>
+
         <div class="container">
+           
             <div id="logo">
                 <img src="/static/img/icon.png" alt="Code Check logo, with a checkmark and x." id="logo_img">
                 <h1 id="h1_logo">Code Check</h1>
@@ -32,7 +35,7 @@
                         <label for="url">Enter a URL.</label>
                         <input type="text" id="url" placeholder="http://" name="url" class="form-control" />
                        
-                        <button id="url_btn" class="btn btn-primary"type="submit">Submit</button>
+                        <button id="url_btn" class="btn btn-info"type="submit">Submit</button>
                
                 </form>
             </div>
@@ -46,18 +49,17 @@
             
             <div id="intro">
                 <h2><small><br />Check your code. Check your privilege.</small></h2>
-            <p>Veggies es bonus vobis, proinde vos postulo essum magis kohlrabi welsh onion daikon amaranth tatsoi tomatillo melon azuki bean garlic.
-
-            Gumbo beet greens corn soko endive gumbo gourd. Parsley shallot courgette tatsoi pea sprouts fava bean collard greens dandelion okra wakame tomato. Dandelion cucumber earthnut pea peanut soko zucchini.</p>
+            <p>The web was born accessible, and Code Check wants to help keep it that way. Simply type in a url and check any site for screen reader compatibility. Within seconds, you’ll have a full report to help you understand how screen readers interpret the page.</p>
             </div>
             
             <div id="bookmarklet">
                 <h2 id="bk-heading">Get the bookmarklet!</h2>
-                
-                <!-- <img id="bk-arrow" src="/static/img/arrow.png" /> -->
-                <a id="bk-btn" class="btn btn-large" href="javascript:(function(){var script=document.createElement('SCRIPT');script.src='http://localhost:5000/static/js/app.js';document.body.appendChild(script);})()">Code Check</a>
+                    <p id="bk-msg">Drag to your bookmarks bar to quickly Code Check any page.</p>
+                    <!-- <img id="home-arrow" src="/static/img/skinny_arrow.png" /> -->
+                    <i class="icon-circle-arrow-right"></i>
+                    <a id="bk-btn" class="btn btn-large btn-info" href="javascript:(function(){var script=document.createElement('SCRIPT');script.src='http://localhost:5000/static/js/app.js';document.body.appendChild(script);})()">Code Check</a>
 
-                 <p id="bk-msg">Drag it to your bookmarks bar to quickly Code Check any page.</p>
+                 
             </div>
 
             
