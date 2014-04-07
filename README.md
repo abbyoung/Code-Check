@@ -2,22 +2,27 @@
 # Code Check
 
 ## The Basics
-Code Check is a web standards accessibility testing tool for screen readers. Utilizing [Section 508](http://http://www.section508.gov/), current web standards, and common screen reader behaviors, Code Check parses the html of any page using [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/), submitted either via url or captured with the Code Check bookmarklet. Each report includes approximate screen reader output in text, page outline, page links, and errors for more accessible code. 
+Code Check is a web standards accessibility testing tool for screen readers. Utilizing [Section 508](http://http://www.section508.gov/), current web standards, and common screen reader behaviors, Code Check parses the html of any page using [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/), submitted either via url or captured with the Code Check bookmarklet. It performs a series of magic tricks on the code (described below), and stores+returns a unique report. Each report includes approximate screen reader output in text, page outline, page links, and errors for more accessible code. 
 
 ## Installation
-Code Check utilizes Python, Flask, Jinja, Bootstrap, and SQLAlchemy. To install, git clone the repo, create a virtualenv, and `pip install -r requirements.txt`. You'll find the bookmarklet JavaScript in /static/js/app.js. Before running `views.py` to see it in action, set up the database.
+Code Check utilizes Python, Flask, Jinja, Bootstrap, and SQLAlchemy. To install, git clone the repo, create a virtualenv, and `pip install -r requirements.txt`. You'll find the bookmarklet JavaScript in `/static/js/app.js`. Before running `views.py` to see it in action, set up the database.
 
 
 ## Database Know-How
-After installing Code Check, you'll need to create your tables. Un-comment out `# create_tables()` at the end of `model.py`, run it, and boom. You now have a simple yet powerful database.
+After installing the requirements, you'll need to create your tables. Un-comment out `# create_tables()` at the end of `model.py`, run it, and boom! You now have a simple yet powerful database. Let's look at the tables:
 
 
 * **Messages**
+
 Messages stores all existing error messages and their codes that get displayed under Issues in the report. These errors are tested in `model.PageParser()`, and added to the database in `model.results()`.
 
-* **Report Message**<br />For every error detected on a page, a report message is created with the `report_id`, `message_id`, and a `code_snippet` if relevant
+* **Report Message**
 
-* **Reports**<br />For every url or html submitted, a new report is created. The Reports table stores the `url`, `text_output`, `outline`, `links`, `stats`, and a `created_at` DateTime.
+For every error detected on a page, a report message is created with the `report_id`, `message_id`, and a `code_snippet` if relevant
+
+* **Reports**
+
+For every url or html submitted, a new report is created. The Reports table stores the `url`, `text_output`, `outline`, `links`, `stats`, and a `created_at` DateTime.
 
 
 ## Okay. So, how does it work?
@@ -34,10 +39,10 @@ If you're accessing Code Check from the web app index page, it's as easy as past
 * Compile links list.
 * Perform code checks to generate warnings/errors.
 
-Once a page has been parsed, it gets a little extra grooming in `model.results()`. Report data and report error messages are stored in the database, the body text is marked up with HTML, and it's sent to the /results route for viewing.
+Once a page has been parsed, it gets a little extra grooming in `model.results()`. Report data and report error messages are stored in the database, the body text is marked up with HTML, and it's sent to the `/results` route for viewing.
 
 ### The Bookmarklet
-If you want to check a private/log-in required page, you'll need to use the Code Check bookmarklet (found on the index page). Drag it to your bookmarks bar, and click when you've found a page to check. From here, the html is pulled from the document and parsed the same way. After storing the report data, the unique report_id gets sent to the /report view, where the relevant data is pulled and displayed.
+If you want to check a private/log-in required page, you'll need to use the Code Check bookmarklet (found on the index page). Drag it to your bookmarks bar, and click when you've found a page to check. From here, the html is pulled from the document and parsed the same way. After storing the report data, the unique `report_id` gets sent to the `/report` view, where the relevant data is pulled and displayed.
 
 ## Why Code Check?
 **“The power of the Web is in its universality.
