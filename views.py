@@ -2,9 +2,7 @@ from flask import Flask, render_template, redirect, request, g, session, url_for
 from model import Report, Message, Report_Message, PageParser
 from flaskext.markdown import Markdown
 import config
-import forms
 import model
-import forms
 import re
 from num2words import num2words
 import json
@@ -53,7 +51,9 @@ def get_bookmarklet():
 def bookmarklet_results(data):
     report_id = data
     report = model.db_session.query(model.Report).filter_by(id=report_id).first()
-
+    url = report.url
+    url = re.sub('^(http|https)://', '', url)
+    
     stats = json.loads(report.stats)
     headings = num2words(stats['Number of Headings'])
     links = num2words(stats['Number of Links'])
@@ -63,6 +63,11 @@ def bookmarklet_results(data):
     links_list = json.loads(report.links)
     page_report = model.db_session.query(model.Report_Message).filter_by(report_id=report_id).all()
     
+    if len(page_report) > 0:
+        issues = len(page_report)
+    else:
+        issues = None
+        page_report = ["No issues."]
     messages = {}
 
     for i in range(len(page_report)):
@@ -77,7 +82,7 @@ def bookmarklet_results(data):
             messages[msg_title] = msg
     
     html = render_template("bk_results.html", headings=headings, links=links, body=body, 
-                    outline=outline, links_list=links_list, messages=messages)
+                    outline=outline, links_list=links_list, messages=messages, url=url, issues=issues)
     return html
 
 

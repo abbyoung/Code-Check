@@ -72,6 +72,7 @@ def create_tables():
 class PageParser():
     def __init__(self, url=None, html=None):
         if html:
+            print "THIS IS HTML"
             print html
             self.soup = BeautifulSoup(html)
         
@@ -80,6 +81,7 @@ class PageParser():
             self.r = requests.get(self.url)
 
             self.data = self.r.text
+            print "THIS IS FROM URL"
             print self.data
             self.soup = BeautifulSoup(self.data)
         
@@ -546,7 +548,7 @@ def results(page, url):
 
     # If error found, add to report_message database
     if checks['Header'] == 'header':
-        message = add_message(report=r, key='Header', value='header', error='header', code_snippet=page.header())
+        message = add_message(report=r, key='Header', value='header', error='header', code_snippet=None)
         page_report['Header'] = message
     
     if checks['Title'] == 'titleoveruse':

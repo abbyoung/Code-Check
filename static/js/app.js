@@ -1,4 +1,4 @@
-var h = document.documentElement.innerHTML;
+var h = document.documentElement.outerHTML;
 var x = new XMLHttpRequest();
 x.open('POST', 'http://sherry.local:5000/api', true);
 x.addEventListener('load', function (e) {
