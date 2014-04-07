@@ -2,7 +2,7 @@
 # Code Check
 
 ## The Basics
-Code Check is a web standards accessibility testing tool for screen readers. Utilizing [Section 508](http://http://www.section508.gov/), current web standards, and common screen reader behaviors, Code Check parses the html of any page using [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/), submitted either via url or captured with the Code Check bookmarklet. It performs a series of magic tricks on the code (described below), and stores+returns a unique report. Each report includes approximate screen reader output in text, page outline, page links, and accessibility issues.
+Code Check is a web standards accessibility testing tool for screen reader compatibility. Utilizing [Section 508](http://http://www.section508.gov/), current web standards, and common screen reader behaviors, Code Check parses the html of any page using [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/), submitted either via url or captured with the Code Check bookmarklet. It performs a series of magic tricks on the code (described below), and stores+returns a unique report. Each report includes approximate screen reader output in text, page outline, page links, and accessibility issues.
 
 ![alt text](https://raw.githubusercontent.com/abbyoung/Project/master/static/img/codecheck_home.png "Code Check: Enter a URL.")
 
