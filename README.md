@@ -49,7 +49,7 @@ If you're accessing Code Check from the web app index page, it's as easy as past
 Once a page has been parsed, it gets a little extra grooming in `model.results()`. Report data and report error messages are stored in the database, the body text is marked up with HTML, and it's sent to the `/results` route for viewing.
 
 ### The Bookmarklet
-If you want to check a private/log-in required page, you'll need to use the Code Check bookmarklet (found on the index page). Drag it to your bookmarks bar, and click when you've found a page to check. From here, the html is pulled from the document and parsed the same way. After storing the report data, the unique `report_id` gets sent to the `/report` view, where the relevant data is pulled and displayed.
+For easier on-the-go code checks, try the Code Check bookmarklet (found on the index page). Drag it to your bookmarks bar, and click when you've found a page to check. From here, the html is pulled from the document and parsed the same way. After storing the report data, the unique `report_id` gets sent to the `/report` view, where the relevant data is pulled and displayed.
 
 ## Why Code Check?
 **“The power of the Web is in its universality.
