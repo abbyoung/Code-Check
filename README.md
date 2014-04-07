@@ -6,6 +6,8 @@ Code Check is a web standards accessibility testing tool for screen readers. Uti
 
 ![alt text](https://raw.githubusercontent.com/abbyoung/Project/master/static/img/codecheck_home.png "Code Check: Enter a URL.")
 
+![alt text](https://raw.githubusercontent.com/abbyoung/Project/master/static/img/codecheck_report.png "Code Check: Report At-A-Glance")
+
 ## Installation
 Code Check utilizes Python, Flask, Jinja2, Bootstrap, and SQLAlchemy. To install, git clone the repo, create a virtualenv, and `pip install -r requirements.txt`. You'll find the bookmarklet JavaScript in `/static/js/app.js`. Before running `views.py` to see it in action, set up the database.
 
