@@ -6,7 +6,8 @@ Code Check is a web standards accessibility testing tool for screen readers. Uti
 
 ![alt text](https://raw.githubusercontent.com/abbyoung/Project/master/static/img/codecheck_home.png "Code Check: Enter a URL.")
 
-
+<br />
+<br />
 
 ![alt text](https://raw.githubusercontent.com/abbyoung/Project/master/static/img/codecheck_report.png "Code Check: Report At-A-Glance")
 
