@@ -5,7 +5,7 @@
         <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
         <script type="text/javascript" src="/static/js/bootstrap.js"></script>
-        <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="/static/js/bootstrap.js"></script>
     </head>
     <body>
         <div class="navbar">
@@ -54,12 +54,10 @@
             
             <div id="bookmarklet">
                 <h2 id="bk-heading">Get the bookmarklet!</h2>
-                    <p id="bk-msg">Drag to your bookmarks bar to quickly Code Check any page.</p>
-                    <!-- <img id="home-arrow" src="/static/img/skinny_arrow.png" /> -->
-                    <i class="icon-circle-arrow-right"></i>
+                    <p id="bk-msg">Drag the button your bookmarks bar to quickly Code Check any page.</p>
+                    
                     <a id="bk-btn" class="btn btn-large btn-info" href="javascript:(function(){var script=document.createElement('SCRIPT');script.src='http://localhost:5000/static/js/app.js';document.body.appendChild(script);})()">Code Check</a>
 
-                 
             </div>
 
             

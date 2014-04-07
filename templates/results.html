@@ -6,10 +6,10 @@
 <h1>Results for {{url}}</h1>
 
 <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-        <li><a data-toggle="tab" href="#screenreader">Screen Reader Output</a></li>
+        <li class="active"><a data-toggle="tab" href="#screenreader">Screen Reader Output</a></li>
         <li><a data-toggle="tab" href="#outline">Page Outline</a></li>
         <li><a data-toggle="tab" href="#links">Links</a></li>
-        <li class="active">
+        <li>
             <a data-toggle="tab" href="#issues">Issues 
                 <span class="issues">
             {% if issues != None %}
@@ -21,7 +21,7 @@
 
 
 <div class="tab-content">
-<div class="tab-pane" id="screenreader">
+<div class="tab-pane active" id="screenreader">
     <h2>Screen Reader Output</h2>
 
 <!--     <p>Below is an approximation of how screen readers will interpret the page.</p> -->
@@ -50,7 +50,7 @@
     {{item}}<br />
     {% endfor %}
 </div>
-<div class="tab-pane active" id="issues">
+<div class="tab-pane" id="issues">
     <h2>Issues</h2>
     <hr>
     <!-- <p>For more information, check out the docs.</p> -->
