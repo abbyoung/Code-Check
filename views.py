@@ -80,6 +80,8 @@ def bookmarklet_results(data):
             messages[msg_title] = [msg, code_snippet]
         else:
             messages[msg_title] = msg
+
+    print messages
     
     html = render_template("bk_results.html", headings=headings, links=links, body=body, 
                     outline=outline, links_list=links_list, messages=messages, url=url, issues=issues)

@@ -549,7 +549,7 @@ def results(page, url):
     # If error found, add to report_message database
     if checks['Header'] == 'header':
         message = add_message(report=r, key='Header', value='header', error='header', code_snippet=None)
-        page_report['Header'] = message
+        page_report['Header Element Present'] = message
     
     if checks['Title'] == 'titleoveruse':
         message = add_message(report=r, key='Title', value='titleoveruse', error='titleoveruse', code_snippet=None)
@@ -571,7 +571,7 @@ def results(page, url):
 
     if checks['Alt Tags'] == 'alttags':
         message = add_message(report=r, key='Alt Tags', value='alttags', error='alttags', code_snippet=None)
-        page_report['Alt Tags'] = message
+        page_report['Missing Alternative Text'] = message
 
     if checks['Headings'] == 'missingh1':
         message = add_message(report=r, key='Headings', value='missingh1', error='missingh1', code_snippet=None)
@@ -583,11 +583,11 @@ def results(page, url):
 
     if checks['Headings'] == 'headingsskip':
         message = add_message(report=r, key='Headings', value='headingsskip', error='headingsskip', code_snippet=None)
-        page_report['Headings'] = message
+        page_report['Headings Steps'] = message
 
     if checks['Tables'] == 'layouttables':
         message = add_message(report=r, key='Tables', value='layouttables', error='layouttables', code_snippet=None)
-        page_report['Tables'] = message
+        page_report['Layout Tables'] = message
 
     if checks['Language'] == 'language':
         message = add_message(report=r, key='Language', value='language', error='language', code_snippet=None)
@@ -595,19 +595,19 @@ def results(page, url):
 
     if checks['No Script'] == 'noscript':
         message = add_message(report=r, key='No Script', value='noscript', error='noscript', code_snippet=None)
-        page_report['No Script'] = message
+        page_report['noscript Element Present'] = message
 
     if checks['Form - Input Label'] == 'inputlabel':
         message = add_message(report=r, key='Form - Input Label', value='inputlabel', error='inputlabel', code_snippet=None)
-        page_report['Form - Input Label'] = message
+        page_report['Missing Input Label'] = message
 
     if checks['Form - Text Area Label'] == 'textarealabel':
         message = add_message(report=r, key='Form - Text Area Label', value='textarealabel', error='textarealabel', code_snippet=None)
-        page_report['Form - Text Area Label'] = message 
+        page_report['Missing Text Area Label'] = message 
 
     if checks['Form - Select Label'] == 'selectlabel':
         message = add_message(report=r, key='Form - Select Label', value='selectlabel', error='selectlabel', code_snippet=None)
-        page_report['Form - Select Label'] = message
+        page_report['Missing Select Label'] = message
 
     report_id = r.id
     
