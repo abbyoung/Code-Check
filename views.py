@@ -1,6 +1,5 @@
 from flask import Flask, render_template, redirect, request, g, session, url_for, flash, Markup, make_response
 from model import Report, Message, Report_Message, PageParser
-from flask.ext.login import LoginManager, login_required, login_user, current_user
 from flaskext.markdown import Markdown
 import config
 import forms
@@ -20,40 +19,19 @@ from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 app = Flask(__name__)
 app.config.from_object(config)
 
-# Stuff to make login easier
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "login"
-
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return User.query.get(user_id)
-
-# End login stuff
 
 # Adding markdown capability to the app
 Markdown(app)
 
 @app.route("/")
 def index():
-    #posts = Post.query.all()
     return render_template("index.html")
 
 @app.route("/", methods=["POST"])
 def get_url():
-    # form = forms.LinkForm(request.form)
-    # url = form.page_url.data
     url = request.form.get("url")
     if not re.match('^(http|https)://', url):
         url = 'http://' + url
-    # if not form.validate():
-    #     flash("Error")
-    #     return render_template("index.html")
-    # url = form.url.data
-    #     # return render_template("index.html")
-    # # url = request.form.get("url")
-    # if not re.match('^(http|https)://', url):
-    #     url = 'http://' + url
      
     return redirect(url_for("results", url=url))
 
@@ -92,8 +70,6 @@ def bookmarklet_results(data):
         msg_title = page_report[i].message.title
         msg = page_report[i].message.message
         
-        #page_report[0].message.message
-        # messages[page_report[i].message.title] = [page_report[i].message.message]
         if page_report[i].code_snippet:
             code_snippet = json.loads(page_report[i].code_snippet)
             messages[msg_title] = [msg, code_snippet]
@@ -118,13 +94,15 @@ def results():
     
     results = model.results(page, url)
     url = re.sub('^(http|https)://', '', url)
-    print len(url)
-    if len(url) > 40:
-        pass
+    if len(results['page_report']) > 0:
+        issues = len(results['page_report'])
+    else:
+        issues = None
+        results['page_report'] = ["No issues."]
 
     html = render_template("results.html", headings=results['headings'],
                                 links=results['links'], body=results['body'], outline=results['outline'],
-                                links_list=results['links_list'], page_report=results['page_report'], url=url)
+                                links_list=results['links_list'], page_report=results['page_report'], url=url, issues=issues)
     return html
 
 
@@ -135,46 +113,6 @@ def about():
 @app.route("/help")
 def help():
     return render_template("help.html")
-
-
-# @app.route("/post/new", methods=["POST"])
-# @login_required
-# def create_post():
-#     form = forms.NewPostForm(request.form)
-#     if not form.validate():
-#         flash("Error, all fields are required")
-#         return render_template("new_post.html")
-
-#     post = Post(title=form.title.data, body=form.body.data)
-#     current_user.posts.append(post) 
-    
-#     model.session.commit()
-#     model.session.refresh(post)
-
-#     return redirect(url_for("view_post", id=post.id))
-
-# @app.route("/login")
-# def login():
-#     return render_template("login.html")
-
-# @app.route("/login", methods=["POST"])
-# def authenticate():
-#     form = forms.LoginForm(request.form)
-#     if not form.validate():
-#         flash("Incorrect username or password") 
-#         return render_template("login.html")
-
-#     email = form.email.data
-#     password = form.password.data
-
-#     user = User.query.filter_by(email=email).first()
-
-#     if not user or not user.authenticate(password):
-#         flash("Incorrect username or password") 
-#         return render_template("login.html")
-
-#     login_user(user)
-#     return redirect(request.args.get("next", url_for("index")))
 
 
 if __name__ == "__main__":

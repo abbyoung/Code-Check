@@ -299,7 +299,7 @@ class PageParser():
         for tag in self.soup.findAll(re.compile('title')):
             title.append(tag)
         return title[0]
-    # WARNINGS/ERRORS CHECKS -- MAY MOVE TO REPORT CLASS
+    # Warnings/Errors Checks
     def check_title(self):
         title = []
         for tag in self.soup.findAll(re.compile('title')):
@@ -327,9 +327,9 @@ class PageParser():
         headings_check = {}
         headings = self.headings()
         
-        #are there any headings?
+        # Are there any headings?
         if len(headings) > 0:
-        #is there an h1?
+        # Is there an h1?
             if headings[0] == 'h1':
                 headings_check['h1'] = 'True'
             else:
@@ -337,7 +337,7 @@ class PageParser():
         else:
             headings_check['h1'] = 'missingh1'
             headings_check['Headings Step Check'] = 'noheadings'
-        #check for steps
+        # Check for steps
         for i in range(len(headings)):
             if headings[i] == 'h1':
                 headings[i] = 1
@@ -532,20 +532,19 @@ def results(page, url):
     body = body.replace('^', Markup('<br><span class="highlight"><br />'))
     body = body.replace('*', Markup('</span><br>'))
     
-    #encode outline and lists as json objects
+    # Encode outline and lists as json objects
     store_outline = json.dumps(outline)
     store_links = json.dumps(links_list)
     store_stats = json.dumps(stats)
-    #create report
-    # report = model.create_report(url, body, store_outline, store_links)
+    # Create report
+   
     r = Report(url=url, text_output=body, links=store_links, outline=store_outline, stats=store_stats)
-    #run checks
+    # Run checks
 
-    
     checks = page.checks()
     page_report = {}
 
-    #if error found, add to report_message database
+    # If error found, add to report_message database
     if checks['Header'] == 'header':
         message = add_message(report=r, key='Header', value='header', error='header', code_snippet=page.header())
         page_report['Header'] = message
@@ -609,7 +608,7 @@ def results(page, url):
         page_report['Form - Select Label'] = message
 
     report_id = r.id
-    print report_id
+    
     results['headings'] = headings
     results['links'] = links
     results['body'] = body
@@ -617,7 +616,6 @@ def results(page, url):
     results['links_list'] = links_list
     results['page_report'] = page_report
     results['report_id'] = report_id
-    
 
     return results
     

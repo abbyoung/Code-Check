@@ -68,10 +68,7 @@
 
 }
 
-#home-arrow {
-  width: 100px;
-  z-index: 1001;
-}
+
 
 #bookmarklet {
   width: 610px;
@@ -91,11 +88,6 @@
 
 }
 
-
-img#bk-arrow {
-  width: 100px;
-}
-
 #bk-btn {
   
   margin-top: 15px;
@@ -104,6 +96,10 @@ img#bk-arrow {
 
 #bk-msg {
   font-size: 16px;
+}
+
+.issues {
+  color: red;
 }
 article,
 aside,

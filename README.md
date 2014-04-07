@@ -1,68 +1,50 @@
-# Initial readme
+
+# Code Check
+
+## The Basics
+Code Check is a web standards accessibility testing tool for screen readers. Utilizing [Section 508](http://http://www.section508.gov/), current web standards, and common screen reader behaviors, Code Check parses the html of any page using [BeautifulSoup](http://www.crummy.com/software/BeautifulSoup/), submitted either via url or captured with the Code Check bookmarklet. Each report includes approximate screen reader output in text, page outline, page links, and errors for more accessible code. 
+
+## Installation
+Code Check utilizes Python, Flask, Jinja, Bootstrap, and SQLAlchemy. To install, git clone the repo, create a virtualenv, and `pip install -r requirements.txt`. You'll find the bookmarklet JavaScript in /static/js/app.js. Before running `views.py` to see it in action, set up the database.
 
 
-
-## Heroku
-
-### Getting Setup
-
-To get started with heroku, download and install the heroku toolkbelt. This will install several things on your system for you, but we only care about the heroku client for now.
-
-https://toolbelt.heroku.com
-
-While that is running, go head and signup on  http://heroku.com if you haven't already.
-
-### Creating an app
-
-Creating an app on heroku is simple.  We'll start off by logging into heroku. From your command line run `heroku login`. It will ask you for your heroku email / password. If you haven't created a public / private key it will ask you to do that. Say Yes.
+## Database Know-How
+After installing Code Check, you'll need to create your tables. Un-comment out `# create_tables()` at the end of `model.py`, run it, and boom. You now have a simple yet powerful database.
 
 
-Now that you're logged in, it's time to create the app. If you can't think of a name for your app, don't worry heroku will generate one if you leave off the name. Run `heroku create NAMEOFYOURAPP`. Assuming nobody has taken that name already, you're now the owner a shiny new heroku app!
+* **Messages**
+Messages stores all existing error messages and their codes that get displayed under Issues in the report. These errors are tested in `model.PageParser()`, and added to the database in `model.results()`.
 
-````bash
-heroku create
-Creating radiant-beach-5469... done, stack is cedar
-http://radiant-beach-5469.herokuapp.com/ | git@heroku.com:radiant-beach-5469.git
-Git remote heroku added
-````
+* **Report Message**<br />For every error detected on a page, a report message is created with the `report_id`, `message_id`, and a `code_snippet` if relevant
+
+* **Reports**<br />For every url or html submitted, a new report is created. The Reports table stores the `url`, `text_output`, `outline`, `links`, `stats`, and a `created_at` DateTime.
 
 
-### Deploying
-
-So now we have an app and we have a heroku account. Time to tie these two things together. As you may already know, heroku is built around git. What this means is we can push to heroku like it's any other git repository and have the changes show up for us. To do this, run `git push heroku master`.
-
-Once this is done, your app will be deployed and [almost] ready to use! Run `heroku open` to get to your app!
-
-### Database stuff
-Chances are if you're making a web app, you'll have a database. If you're using the flask_template app, I'm also willing to bet you've been using SQLite. Well I have good news and bad news for you.  The bad news, Heroku doesn't work with SQLite and several of their engineers have said it probably never will. The good news, it doesn't matter! Heroku offers a free Postgres DB with every app.
-
-Now at this point you're probably wondering, wait what? I've been using SQLite. How does Postgres help me? Will I have to start all over? Well... the flask_template app uses SQLAlchemy, which actualy doesn't care what you use as a DB.
-
-To get a db, tell Heroku to provision you one. `heroku addons:add heroku-postgresql`. Heroku will now create a db for you and give you back a URL, mine was `HEROKU_POSTGRESQL_PINK_URL`. From here we have to promote this db to main using the following command `heroku pg:promote HEROKU_POSTGRESQL_COLOR_URL` (don't forget to change the color).
-
-Now we have an app, a heroku account, and a heroku db. One more step and we're done.
-
-Now we want to create the table and seed the database. Run `heroku run python model.py`. Once this is done your app is now ready to use. Let's open it and see it live on the internet.
-
-### Misc
-
-#### Best practices
-
-- Don't be afraid to force push to heroku. 
-- Treat Heroku like a transient repo
-
-#### Are you a wizard? Where did the Heroku remote come from?
-
-Nope, heroku will automatically add a remote named heroku to your `.git/config` when you create the app.
-
-#### Pushing feature branches
-
-Heroku will only recognize changes on the master branch. Fortunately there is a trick we can use to push our local feature branch into the heroku master branch.
-
-` git push heroku FEATURE_BRANCH:master` This will push the feature branch into the master branch on master
+## Okay. So, how does it work?
+### The Web App
+If you're accessing Code Check from the web app index page, it's as easy as pasting in a URL and clicking "Submit". The app sends the url to the PageParser class, where it creates a new object, pulls the html, and makes "soup" using BeautifulSoup. From here, a number of magical things happen. We:
 
 
-#### Anything else I should know?
+* Pull page stats including number of headings and links
+* Pull a complete outline of the page using h tags (h1, h2...)
+* Remove extraneous data including comments, `<script>`, `<meta>`, and `<style`> tags.
+* Insert screen reader landmarks such as BULLET, LINK, GRAPHIC, etc.
+* Replace special characters with text translations.
+* Replace numbers with text translations.
+* Compile links list.
+* Perform code checks to generate warnings/errors.
 
-Heroku is readonly (well there is write access but output is limited to the dyno that wrote to that file. )
+Once a page has been parsed, it gets a little extra grooming in `model.results()`. Report data and report error messages are stored in the database, the body text is marked up with HTML, and it's sent to the /results route for viewing.
+
+### The Bookmarklet
+If you want to check a private/log-in required page, you'll need to use the Code Check bookmarklet (found on the index page). Drag it to your bookmarks bar, and click when you've found a page to check. From here, the html is pulled from the document and parsed the same way. After storing the report data, the unique report_id gets sent to the /report view, where the relevant data is pulled and displayed.
+
+## Why Code Check?
+**“The power of the Web is in its universality.
+Access by everyone regardless of disability is an essential aspect.”**
+
+*&mdash;Tim Berners-Lee, W3C Director and inventor of the World Wide Web*
+
+The web was born accessible, and it's our job to keep it that way. Code Check was created to make web accessibility easier to achieve, with an initial focus on screen readers.
+
 
