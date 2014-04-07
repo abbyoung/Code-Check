@@ -36,10 +36,13 @@
 </div>
 <div class="tab-pane" id="outline">
 <h2>Page Outline</h2>
-<hr>
-{% for key, value in outline.iteritems() %}
-{{key}}, {{value}}<br />
-{% endfor %}
+    <hr>
+    {% for i in range(outline|length) %}
+        {% for key, value in outline[i].iteritems() %}
+        {{key}}, {{value}}
+        <br />
+        {% endfor %}
+    {% endfor %}
 </div>
 <div class="tab-pane" id="links">
 <h2>Links</h2>
