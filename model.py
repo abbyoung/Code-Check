@@ -18,14 +18,16 @@ from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 from flask import Markup
 from flask.ext.login import UserMixin
 import json
+from flask.ext.sqlalchemy import SQLAlchemy
 
-engine = create_engine(config.DB_URI, echo=False) 
-db_session = scoped_session(sessionmaker(bind=engine,
-                         autocommit = False,
-                         autoflush = False))
+# engine = create_engine(config.DB_URI, echo=False) 
+# db_session = scoped_session(sessionmaker(bind=engine,
+#                          autocommit = False,
+#                          autoflush = False))
 
-Base = declarative_base()
-Base.query = db_session.query_property()
+db = SQLAlchemy()
+Base = db.Model
+# Base.query = db_session.query_property()
 
 
 
@@ -64,7 +66,7 @@ class Report(Base):
 
 def create_tables():
     Base.metadata.create_all(engine)
-    db_session.commit()
+    db.session.commit()
 
 
 class PageParser():
@@ -527,12 +529,12 @@ class PageParser():
 
 def add_message(report, key, value, error, code_snippet):
     # Add error messages for report to db
-    message = db_session.query(Message).filter_by(error=error).first()
+    message = db.session.query(Message).filter_by(error=error).first()
     message_id = message.id
     m = Report_Message(message_id=message_id, code_snippet=code_snippet)
     report.messages.append(m)
-    db_session.add(m)
-    db_session.commit()
+    db.session.add(m)
+    db.session.commit()
     message = message.message
     
     return message
@@ -565,7 +567,7 @@ def results(page, url):
     
     # Create and store report
     r = Report(url=url, text_output=body, links=store_links, outline=store_outline, stats=store_stats)
-    
+
     # Run checks
     checks = page.checks()
     page_report = {}

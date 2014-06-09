@@ -17,6 +17,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 app = Flask(__name__)
 app.config.from_object(config)
 
+model.db.init_app(app)
 
 # Adding markdown capability to the app
 Markdown(app)
@@ -62,7 +63,7 @@ def bookmarklet_results(data):
     # Get report_id
     report_id = data
     # Get report from db
-    report = model.db_session.query(model.Report).filter_by(id=report_id).first()
+    report = model.db.session.query(model.Report).filter_by(id=report_id).first()
     url = report.url
     # Format url for display
     url = re.sub('^(http|https)://', '', url)
@@ -74,7 +75,7 @@ def bookmarklet_results(data):
     outline = json.loads(report.outline)
     links_list = json.loads(report.links)
     # Get report errors messages from db
-    page_report = model.db_session.query(model.Report_Message).filter_by(report_id=report_id).all()
+    page_report = model.db.session.query(model.Report_Message).filter_by(report_id=report_id).all()
     
     # Display number of issues in Issues tab
     if len(page_report) > 0:
