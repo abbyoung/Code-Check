@@ -8,7 +8,6 @@ import requests
 import re
 import sys
 import config
-import bcrypt
 from datetime import datetime
 
 from sqlalchemy.ext.declarative import declarative_base

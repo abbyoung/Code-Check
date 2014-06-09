@@ -8,16 +8,15 @@ MarkupSafe==0.19
 SQLAlchemy==0.9.3
 WTForms==1.0.5
 Werkzeug==0.9.4
-bcrypt==1.0.2
 beautifulsoup4==4.3.2
 cffi==0.8.2
 itsdangerous==0.23
-lxml==3.3.3
 num2words==0.5.1
 psycopg2==2.5.2
 pycparser==2.10
 requests==2.2.1
 six==1.5.2
 wsgiref==0.1.2
+gunicorn==18.0
 
 
