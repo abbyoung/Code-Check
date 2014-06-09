@@ -37,12 +37,19 @@
 <div class="tab-pane" id="outline">
 <h2>Page Outline</h2>
     <hr>
+    {% if outline|length > 0 %}
+
     {% for i in range(outline|length) %}
         {% for key, value in outline[i].iteritems() %}
         {{key}}, {{value}}
         <br />
         {% endfor %}
     {% endfor %}
+
+    {% else  %}
+    <p>No headings detected.</p>
+
+    {% endif %}
 </div>
 <div class="tab-pane" id="links">
 <h2>Links</h2>
@@ -56,38 +63,40 @@
 <hr>
 <!-- <p>For more information, check out the docs.</p> -->
 
+{% if messages|length > 0 %}
+    {% for title in messages %}
+    <br />
+        <h3>{{title}}</h3>
 
-{% for title in messages %}
-<br />
-    <h3>{{title}}</h3>
+            {% if title == 'Redundant Links' %}
+                <h3><small>{{messages[title][1]|length}} Links Found</small></h3>
+                {{messages[title][0]}}
+                <br /><br />
+                <h4>Links</h4>
+                {% for link in messages[title][1] %}
+                {{link}} <br />
+                {% endfor %}
 
-        {% if title == 'Redundant Links' %}
-            <h3><small>{{messages[title][1]|length}} Links Found</small></h3>
-            {{messages[title][0]}}
-            <br /><br />
-            <h4>Links</h4>
-            {% for link in messages[title][1] %}
-            {{link}} <br />
-            {% endfor %}
+            {% elif title == 'Empty Links' %}
+                <h3><small>{{messages[title]|length}} Links Found</small></h3>
+                {{messages[title][0]}}
+                <br /><br />
+                <h4>Links</h4>
+                {% for link in messages[title][1] %}
+                {{link}} <br />
+                {% endfor %}
 
-        {% elif title == 'Empty Links' %}
-            <h3><small>{{messages[title]|length}} Links Found</small></h3>
-            {{messages[title][0]}}
-            <br /><br />
-            <h4>Links</h4>
-            {% for link in messages[title][1] %}
-            {{link}} <br />
-            {% endfor %}
+            {% else %}
+                {{messages[title]}}
 
-        {% else %}
-            {{messages[title]}}
+            {% endif %}
 
-        {% endif %}
-
-
-    
-<br />
-{% endfor %}
+        
+    <br />
+    {% endfor %}
+{% else %}
+    <p>No issues found.</p>
+{% endif %}
 </div>
 </div>
 

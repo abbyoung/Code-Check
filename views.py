@@ -81,26 +81,25 @@ def bookmarklet_results(data):
     if len(page_report) > 0:
         issues = len(page_report)
     else:
-        issues = "None"
+        issues = 0
         #page_report = ["No issues."]
     
     # Assemble error messages for display
     messages = {}
-    if issues == "None":
-        messages = ["No issues found."]
 
-    else:
-        for i in range(len(page_report)):
+   
+    for i in range(len(page_report)):
 
-            msg_title = page_report[i].message.title
-            msg = page_report[i].message.message
-            
-            if page_report[i].code_snippet:
-                code_snippet = json.loads(page_report[i].code_snippet)
-                messages[msg_title] = [msg, code_snippet]
-            else:
-                messages[msg_title] = msg
+        msg_title = page_report[i].message.title
+        msg = page_report[i].message.message
+        
+        if page_report[i].code_snippet:
+            code_snippet = json.loads(page_report[i].code_snippet)
+            messages[msg_title] = [msg, code_snippet]
+        else:
+            messages[msg_title] = msg
 
+    
     
     
     html = render_template("bk_results.html", headings=headings, links=links, body=body, 
@@ -131,6 +130,7 @@ def results():
     else:
         issues = None
         results['page_report'] = ["No issues."]
+    print results['outline']
 
     html = render_template("results.html", headings=results['headings'],
                                 links=results['links'], body=results['body'], outline=results['outline'],

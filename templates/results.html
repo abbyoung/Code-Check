@@ -39,12 +39,18 @@
 <div class="tab-pane" id="outline">
     <h2>Page Outline</h2>
     <hr>
+    {% if outline|length > 0 %}
+
     {% for i in range(outline|length) %}
         {% for key, value in outline[i].iteritems() %}
         {{key}}, {{value}}
         <br />
         {% endfor %}
     {% endfor %}
+
+    {% else %}
+    <p>No headings detected.</p>
+    {% endif %}
 </div>
 <div class="tab-pane" id="links">
     <h2>Links</h2>
@@ -57,38 +63,40 @@
     <h2>Issues</h2>
     <hr>
     <!-- <p>For more information, check out the docs.</p> -->
-    {% for msg in page_report %}
-    <br />
-    <h3>{{msg}}</h3>
-        {% if msg == 'Redundant Links' %}
-            <h3><small>{{page_report[msg][1]|length}} Links Found</small></h3>
-            {{page_report[msg][0]}}
-            <br /><br />
-            <h4>Links</h4>
-            {% for link in page_report[msg][1] %}
-            {{link}} <br />
-            {% endfor %}
+    {% if page_report|length > 0 %}
 
-        {% elif msg == 'Empty Links' %}
-            <h3><small>{{page_report[msg][1]|length}} Links Found</small></h3>
-            {{page_report[msg][0]}}
-            {% for link in page_report[msg][1] %}
-            {{link}} <br />
-            {% endfor %}
+        {% for msg in page_report %}
+        <br />
+        <h3>{{msg}}</h3>
+            {% if msg == 'Redundant Links' %}
+                <h3><small>{{page_report[msg][1]|length}} Links Found</small></h3>
+                {{page_report[msg][0]}}
+                <br /><br />
+                <h4>Links</h4>
+                {% for link in page_report[msg][1] %}
+                {{link}} <br />
+                {% endfor %}
 
-        {% else %}
-            {{page_report[msg]}}
+            {% elif msg == 'Empty Links' %}
+                <h3><small>{{page_report[msg][1]|length}} Links Found</small></h3>
+                {{page_report[msg][0]}}
+                {% for link in page_report[msg][1] %}
+                {{link}} <br />
+                {% endfor %}
 
-        {% endif %}
+            {% else %}
+                {{page_report[msg]}}
 
+            {% endif %}
+            
+        <br />
+        {% endfor %}
+    </div>
 
-
-        
-    <br />
-    {% endfor %}
-</div>
-
-</div>
+    </div>
+    {% else %}
+    <p>No issues found.</p>
+    {% endif %}
 
 {% endblock %}
 
