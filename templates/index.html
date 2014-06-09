@@ -56,7 +56,7 @@
                 <h2 id="bk-heading">Get the bookmarklet!</h2>
                     <p id="bk-msg">Drag the button your bookmarks bar to quickly Code Check any page.</p>
                     
-                    <a id="bk-btn" class="btn btn-large btn-info" href="javascript:(function(){var script=document.createElement('SCRIPT');script.src='http://localhost:5000/static/js/app.js';document.body.appendChild(script);})()">Code Check</a>
+                    <a id="bk-btn" class="btn btn-large btn-info" href="javascript:(function(){var script=document.createElement('SCRIPT');script.src='{{host_url}}bookmarklet';document.body.appendChild(script);})()">Code Check</a>
 
             </div>
 

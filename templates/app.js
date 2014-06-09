@@ -1,8 +1,8 @@
 var h = document.documentElement.outerHTML;
 var x = new XMLHttpRequest();
-x.open('POST', '{{host_url}}api', true);
+x.open('POST', 'http://sherry.local:5000/api', true);
 x.addEventListener('load', function (e) {
-    window.location = '{{host_url}}report/'+ x.responseText;
+    window.location = 'http://sherry.local:5000/report/'+ x.responseText;
 }, false);
 var d = new FormData();
 d.append("html", h);

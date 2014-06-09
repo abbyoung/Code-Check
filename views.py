@@ -23,7 +23,14 @@ Markdown(app)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", host_url=request.host_url)
+
+@app.route("/bookmarklet")
+def bookmarklet():
+    text = render_template("app.js", host_url=request.host_url)
+    response = make_response(text)
+    response.mimetype = 'text/javascript'
+    return response
 
 @app.route("/", methods=["POST"])
 def get_url():
@@ -50,6 +57,7 @@ def get_bookmarklet():
     return resp
 
 @app.route("/report/<data>", methods=["GET"])
+@crossdomain(origin="*")
 def bookmarklet_results(data):
     # Get report_id
     report_id = data
