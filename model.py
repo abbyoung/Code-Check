@@ -34,7 +34,7 @@ class Message(Base):
     __tablename__ = "messages" 
     
     id = Column(Integer, primary_key=True)
-    title = Column(String(64), nullable=False)
+    title = Column(Text, nullable=False)
     message = Column(Text, nullable=False)
     error = Column(Text, nullable=False)
 
@@ -45,7 +45,7 @@ class Report_Message(Base):
     id = Column(Integer, primary_key=True)
     report_id = Column(Integer, ForeignKey('reports.id'))
     message_id = Column(Integer, ForeignKey('messages.id'))
-    code_snippet = Column(String(64))
+    code_snippet = Column(Text)
     report = relationship("Report", backref=backref("messages", order_by=report_id))
     message = relationship("Message")
 
@@ -54,7 +54,7 @@ class Report(Base):
     __tablename__ = "reports"
     
     id = Column(Integer, primary_key=True)
-    url = Column(String(64))
+    url = Column(Text)
     text_output = Column(Text, nullable=False)
     outline = Column(Text, nullable=False)
     links = Column(Text, nullable=False)
@@ -649,6 +649,6 @@ def results(page, url):
 
 
 if __name__ == "__main__":
-    # create_tables()
+    #create_tables()
     pass
     
