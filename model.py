@@ -65,7 +65,7 @@ class Report(Base):
 
 
 def create_tables():
-    Base.metadata.create_all(engine)
+    #Base.metadata.create_all(engine)
     db.session.commit()
 
 
@@ -543,6 +543,8 @@ def add_message(report, key, value, error, code_snippet):
 def results(page, url):
     results = {}
     url = url
+    print "URL in MODEL"
+    print url
     extract = page.extract()
     links_list = page.get_links()
     outline = page.get_outline()
@@ -567,7 +569,8 @@ def results(page, url):
     
     # Create and store report
     r = Report(url=url, text_output=body, links=store_links, outline=store_outline, stats=store_stats)
-
+    db.session.add(r)
+    db.session.commit()
     # Run checks
     checks = page.checks()
     page_report = {}

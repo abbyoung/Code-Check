@@ -56,31 +56,33 @@
 <hr>
 <!-- <p>For more information, check out the docs.</p> -->
 
+
 {% for title in messages %}
 <br />
-<h3>{{title}}</h3>
-    {% if title == 'Redundant Links' %}
-        <h3><small>{{messages[title][1]|length}} Links Found</small></h3>
-        {{messages[title][0]}}
-        <br /><br />
-        <h4>Links</h4>
-        {% for link in messages[title][1] %}
-        {{link}} <br />
-        {% endfor %}
+    <h3>{{title}}</h3>
 
-    {% elif title == 'Empty Links' %}
-        <h3><small>{{messages[title]|length}} Links Found</small></h3>
-        {{messages[title][0]}}
-        <br /><br />
-        <h4>Links</h4>
-        {% for link in messages[title][1] %}
-        {{link}} <br />
-        {% endfor %}
+        {% if title == 'Redundant Links' %}
+            <h3><small>{{messages[title][1]|length}} Links Found</small></h3>
+            {{messages[title][0]}}
+            <br /><br />
+            <h4>Links</h4>
+            {% for link in messages[title][1] %}
+            {{link}} <br />
+            {% endfor %}
 
-    {% else %}
-        {{messages[title]}}
+        {% elif title == 'Empty Links' %}
+            <h3><small>{{messages[title]|length}} Links Found</small></h3>
+            {{messages[title][0]}}
+            <br /><br />
+            <h4>Links</h4>
+            {% for link in messages[title][1] %}
+            {{link}} <br />
+            {% endfor %}
 
-    {% endif %}
+        {% else %}
+            {{messages[title]}}
+
+        {% endif %}
 
 
     

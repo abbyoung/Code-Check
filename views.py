@@ -54,7 +54,7 @@ def get_bookmarklet():
     results = model.results(page, url)
     # Return report_id for pulling report
     resp = make_response(json.dumps(results['report_id']))
-    
+  
     return resp
 
 @app.route("/report/<data>", methods=["GET"])
@@ -81,22 +81,25 @@ def bookmarklet_results(data):
     if len(page_report) > 0:
         issues = len(page_report)
     else:
-        issues = None
-        page_report = ["No issues."]
+        issues = "None"
+        #page_report = ["No issues."]
     
     # Assemble error messages for display
     messages = {}
+    if issues == "None":
+        messages = ["No issues found."]
 
-    for i in range(len(page_report)):
+    else:
+        for i in range(len(page_report)):
 
-        msg_title = page_report[i].message.title
-        msg = page_report[i].message.message
-        
-        if page_report[i].code_snippet:
-            code_snippet = json.loads(page_report[i].code_snippet)
-            messages[msg_title] = [msg, code_snippet]
-        else:
-            messages[msg_title] = msg
+            msg_title = page_report[i].message.title
+            msg = page_report[i].message.message
+            
+            if page_report[i].code_snippet:
+                code_snippet = json.loads(page_report[i].code_snippet)
+                messages[msg_title] = [msg, code_snippet]
+            else:
+                messages[msg_title] = msg
 
     
     
